@@ -1,0 +1,64 @@
+version: '3.8'
+name: 'ezbiz'
+services:
+  app:
+    build: 
+      context: ./ezbiz-app
+    container_name: ezbiz-app 
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - ezbiz-network
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  backend:
+    build:
+      context: ./ezbiz-backend
+    container_name: ezbiz-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres 
+    networks:
+      - ezbiz-network
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  postgres:
+    image: postgres:16.1-alpine3.19
+    restart: always
+    container_name: ezbiz-postgres 
+    ports:
+      - "5432:5432"
+    deploy:
+      mode: replicated
+      replicas: 1
+    # environment:
+    #   - POSTGRES_USER=khongadmin
+    #   - POSTGRES_PASSWORD=khong1314Family
+    #   - POSTGRES_DB=khongfamily
+    env_file:
+      - .env.database
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - ezbiz-network
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 8081:8080
+#
+volumes:
+  pgdata:
+
+networks:
+  ezbiz-network:
+    name: ezbiz-network

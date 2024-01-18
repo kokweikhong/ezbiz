@@ -1,0 +1,32 @@
+import PageClientEnquiryForm from "./PageClientEnquiryForm";
+
+type PageFooterProps = {
+  themeColor?: string;
+};
+
+const PageFooter: React.FC<PageFooterProps> = ({ themeColor }) => {
+  return (
+    <footer className="text-white">
+      <div className="text-center max-w-[500px] mx-auto py-[30px]">
+        <h2 className="font-semibold text-[22px] mb-[20px]">
+          Sign Up for Our Newsletter
+        </h2>
+        <p className="font-normal">{`Subscribe to us to always stay in touch with us and get the latest news about our company and all of our promotions!`}</p>
+      </div>
+
+      <div className="max-w-[500px] py-[20px] mx-auto">
+        <PageClientEnquiryForm themeColor={themeColor} />
+      </div>
+
+      <div className="bg-[#1d1d1d] text-center">
+        <div className="max-w-[500px] py-[20px] mx-auto">
+          <a href="#">
+            Copyright © 2023 Maejic Media. Powered by Maejic Ezbiz.
+          </a>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default PageFooter;
