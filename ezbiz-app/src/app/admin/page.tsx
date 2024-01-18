@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -9,18 +8,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   DefaultContentValues,
   defaultContentSchema,
 } from "@/interfaces/content";
-import { authOptions } from "@/lib/authOptions";
 import { createDefaultContent, getContentsByUserId } from "@/services/content";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderIcon, PlusIcon } from "lucide-react";
-import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import Link from "next/link";
 
 const people = [
   {
@@ -61,32 +61,53 @@ const people = [
   },
 ];
 
-export default async function Page() {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return <div>Loading</div>;
+export default function Page() {
+  const { data: session, status } = useSession();
+  if (status === "unauthenticated" || !session) {
+    redirect("/auth/signin");
   }
-  const data = await getContentsByUserId(session.user.id);
 
-  console.log(data);
+  const queryClient = useQueryClient();
+
+  const contents = useQuery("contents", {
+    queryFn: () => getContentsByUserId(session.user.id),
+    enabled: !!session,
+  });
+
+  const { mutateAsync: createDefaultContentMutate } = useMutation({
+    mutationFn: (data: DefaultContentValues) => createDefaultContent(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries("contents");
+    },
+  });
+
+  console.log(contents.data);
 
   const form = useForm<DefaultContentValues>({
     resolver: zodResolver(defaultContentSchema),
     defaultValues: {
-      userId: parseInt(session.user.id),
+      userId: parseInt(session ? session.user.id : "0"),
       displayName: "",
     },
   });
 
   async function onSubmit(data: DefaultContentValues) {
     console.log(data);
-    toast.promise(createDefaultContent(data), {
+    toast.promise(createDefaultContentMutate(data), {
       loading: "Creating new project...",
       success: "Project created successfully",
       error(error) {
         return error.message;
       },
     });
+  }
+
+  if (contents.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (contents.isError) {
+    throw contents.error;
   }
 
   return (
@@ -125,36 +146,36 @@ export default async function Page() {
               name="displayName"
               defaultValue=""
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex-1">
                   <FormLabel htmlFor="displayName" className="sr-only">
                     Display name
                   </FormLabel>
                   <div className="grid grid-cols-1 sm:flex-auto">
                     <FormControl>
-                      <Input
+                      <input
                         type="text"
                         id="displayName"
                         className="peer relative col-start-1 row-start-1 border-0 bg-transparent py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter a new project name"
                         {...field}
                       />
-                      <div
-                        className="col-start-1 col-end-3 row-start-1 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 peer-focus:ring-2 peer-focus:ring-indigo-600"
-                        aria-hidden="true"
-                      />
                     </FormControl>
+                    <div
+                      className="col-start-1 col-end-3 row-start-1 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 peer-focus:ring-2 peer-focus:ring-indigo-600"
+                      aria-hidden="true"
+                    />
                     <FormMessage />
                   </div>
                 </FormItem>
               )}
             />
             <div className="mt-3 sm:ml-4 sm:mt-0 sm:flex-shrink-0">
-              <Button
+              <button
                 type="submit"
                 className="block w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Add project
-              </Button>
+              </button>
             </div>
           </form>
         </Form>
@@ -163,6 +184,13 @@ export default async function Page() {
         <h3 className="text-sm font-medium text-gray-500">
           All projects you have access to
         </h3>
+        <div className="w-full flex justify-between">
+          {contents.data?.map((content) => (
+            <Link href={`/admin/${content.id}`} key={content.id}>
+              {content.id}
+            </Link>
+          ))}
+        </div>
         <ul role="list" className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {people.map((person, personIdx) => (
             <li key={personIdx}>

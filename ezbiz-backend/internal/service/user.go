@@ -262,3 +262,45 @@ func(s *userService) ChangePassword(email, oldPassword, newPassword string) erro
 
 	return nil
 }
+
+func (s *userService) GetUserByEmail(email string) (*model.User, error) {
+	user := new(model.User)
+	query := `SELECT
+				id,
+				first_name,
+				last_name,
+				email,
+				password,
+				role,
+				is_active,
+				page_limit,
+				created_at,
+				updated_at
+			FROM users
+			WHERE email = $1`
+
+	stmt, err := s.db.Prepare(query)
+	if err != nil {
+		slog.Error("Error preparing user query", "error", err)
+		return nil, err
+	}
+
+	err = stmt.QueryRow(email).Scan(
+		&user.Id,
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+		&user.Password,
+		&user.Role,
+		&user.IsActive,
+		&user.PageLimit,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+	if err != nil {
+		slog.Error("Error scanning user row", "error", err)
+		return nil, err
+	}
+
+	return user, nil
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { ContentValues } from "@/interfaces/content";
-import { isWithImageExtension } from "@/lib/image";
+import { imageLoader, isWithImageExtension } from "@/lib/image";
 import { cn } from "@/lib/utils";
 import { uploadFile } from "@/services/file";
 import { ImageIcon } from "lucide-react";
@@ -11,19 +11,23 @@ import { ControllerRenderProps } from "react-hook-form";
 import { toast } from "sonner";
 
 type PageDetailsFileUploadProps = {
-  children: React.ReactNode;
+  // children: React.ReactNode;
   field: ControllerRenderProps<ContentValues, any>;
   accept?: InputHTMLAttributes<HTMLInputElement>["accept"];
   color?: string;
 };
 
 const PageDetailsFileUpload: FC<PageDetailsFileUploadProps> = ({
-  children,
+  // children,
   field,
   accept,
   color = "blue",
 }) => {
   const [file, setFile] = useState<File | null>(null);
+
+  const backendUrl = process.env.NEXT_PUBLIC_EZBIZ_BACKEND_URL;
+
+  console.log(backendUrl);
 
   async function handleFileOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.item(0);
@@ -36,6 +40,7 @@ const PageDetailsFileUpload: FC<PageDetailsFileUploadProps> = ({
       success(data) {
         field.onChange(data);
         setFile(file);
+        console.log(data);
         return "File uploaded successfully";
       },
       error(error) {
@@ -54,9 +59,11 @@ const PageDetailsFileUpload: FC<PageDetailsFileUploadProps> = ({
       >
         {isWithImageExtension(field.value) || file ? (
           <Image
+            loader={imageLoader}
+            placeholder="empty"
             src={
               isWithImageExtension(field.value)
-                ? `http://localhost:8080/uploads/${field.value}`
+                ? `${backendUrl}/${field.value}`
                 : URL.createObjectURL(file as Blob)
               // URL.createObjectURL(file as Blob)
             }
@@ -85,7 +92,9 @@ const PageDetailsFileUpload: FC<PageDetailsFileUploadProps> = ({
         <input
           type="file"
           accept={accept || "image/*"}
+          // defaultValue={field.value || ""}
           className="hidden"
+          value={field.value || ""}
           onChange={(e) => {
             toast("Are you confirm to upload file to server?", {
               action: {
@@ -102,7 +111,7 @@ const PageDetailsFileUpload: FC<PageDetailsFileUploadProps> = ({
           }}
         />
       </label>
-      {children}
+      {/* {children} */}
     </div>
   );
 };

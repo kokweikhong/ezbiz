@@ -29,27 +29,42 @@ import { updateContent } from "@/services/content";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Sketch } from "@uiw/react-color";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useQuery } from "react-query";
+import { getContentById } from "@/services/content";
 
-export default function Page({
-  params,
-}: {
-  params: { userid: string; pageid: string };
-}) {
+export default function Page({ params }: { params: { pageid: string } }) {
+  const content = useQuery(
+    ["content", params.pageid],
+    () => getContentById(params.pageid),
+    {
+      onSuccess: (data) => {
+        form.reset(data);
+        mergeSocialMedias(data);
+      },
+      enabled: !!params.pageid,
+    }
+  );
+
+  console.log(content.data);
   // console.log(params);
   const form = useForm<ContentValues>({
     resolver: zodResolver(contentSchema),
-    defaultValues: demoPageDetails,
+    defaultValues: content.data || demoPageDetails,
   });
 
   const themeColor = form.watch("themeColor");
 
   // merge socialMedias default to form and keep the form url.
-  function mergeSocialMedias() {
-    const socialMedias = form.getValues("socialMedias");
+  function mergeSocialMedias(data: ContentValues) {
+    // const socialMedias = form.getValues("socialMedias");
+    if (!data.socialMedias) {
+      form.setValue("socialMedias", defaultSocialMedias);
+      return;
+    }
     const socialMediasWithDefault = defaultSocialMedias.map((item) => {
-      const socialMedia = socialMedias.find(
+      const socialMedia = data.socialMedias.find(
         (socialMedia) => socialMedia.name === item.name
       );
       return {
@@ -71,9 +86,17 @@ export default function Page({
     });
   }
 
-  useEffect(() => {
-    mergeSocialMedias();
-  }, []);
+  // useEffect(() => {
+  //   mergeSocialMedias();
+  // }, []);
+
+  if (content.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (content.isError) {
+    throw content.error;
+  }
 
   return (
     <Form {...form}>
@@ -95,14 +118,14 @@ export default function Page({
                       field={field}
                       accept="image/*"
                       color={themeColor}
-                    >
-                      <FormControl>
-                        <Input
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                          {...field}
-                        />
-                      </FormControl>
-                    </PageDetailsFileUpload>
+                    />
+                    <FormControl>
+                      <Input
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
+                        {...field}
+                      />
+                    </FormControl>
+                    {/* </PageDetailsFileUpload> */}
                     <FormMessage />
                   </div>
                 </FormItem>
@@ -164,14 +187,13 @@ export default function Page({
                       field={field}
                       accept="image/*"
                       color={themeColor}
-                    >
-                      <FormControl>
-                        <Input
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                          {...field}
-                        />
-                      </FormControl>
-                    </PageDetailsFileUpload>
+                    />
+                    <FormControl>
+                      <Input
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
+                        {...field}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </div>
                 </FormItem>
@@ -193,14 +215,13 @@ export default function Page({
                       field={field}
                       accept="image/*"
                       color={themeColor}
-                    >
-                      <FormControl>
-                        <Input
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                          {...field}
-                        />
-                      </FormControl>
-                    </PageDetailsFileUpload>
+                    />
+                    <FormControl>
+                      <Input
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
+                        {...field}
+                      />
+                    </FormControl>
                     <FormDescription>
                       For displaying company logo on top of profie picture use.
                     </FormDescription>
@@ -423,14 +444,14 @@ export default function Page({
                             field={field}
                             accept="image/*"
                             color={themeColor}
-                          >
-                            <FormControl>
-                              <Input
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                                {...field}
-                              />
-                            </FormControl>
-                          </PageDetailsFileUpload>
+                          />
+                          <FormControl>
+                            <Input
+                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
+                              {...field}
+                            />
+                          </FormControl>
+                          {/* </PageDetailsFileUpload> */}
                           <FormMessage />
                         </FormItem>
                         <Separator className="my-2" />

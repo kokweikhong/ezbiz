@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@headlessui/react";
 import { MenuIcon, XIcon } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 import { useState } from "react";
 
 // const navigation = [
@@ -44,6 +45,16 @@ const AdminHeader = () => {
             <span className="sr-only">Open main menu</span>
             <MenuIcon className="h-6 w-6" aria-hidden="true" />
           </button>
+        </div>
+        <div className="hidden lg:flex lg:gap-x-12">
+          {status === "authenticated" && (
+            <Link
+              href="/admin"
+              className="text-sm font-semibold leading-6 text-gray-900"
+            >
+              Admin
+            </Link>
+          )}
         </div>
         {/* <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
@@ -104,17 +115,16 @@ const AdminHeader = () => {
           </div>
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
-              {/* <div className="space-y-2 py-6">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
+              <div className="space-y-2 py-6">
+                {status === "authenticated" && (
+                  <Link
+                    href="/admin"
                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   >
-                    {item.name}
-                  </a>
-                ))}
-              </div> */}
+                    Admin
+                  </Link>
+                )}
+              </div>
               <div className="py-6">
                 {session?.user?.name ? (
                   <div className="-mx-3 space-y-2 flex flex-col justify-center items-start">

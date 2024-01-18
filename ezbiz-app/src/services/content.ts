@@ -14,6 +14,11 @@ export async function getContentsByUserId(
   return res.data;
 }
 
+export async function getContentById(id: string): Promise<ContentValues> {
+  const res = await axiosContent.get(`/${id}`);
+  return res.data;
+}
+
 export async function createDefaultContent(data: DefaultContentValues) {
   const res = await axiosContent.post(`/user/create`, data, {
     headers: {

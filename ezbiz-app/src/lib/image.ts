@@ -5,7 +5,7 @@ export function isWithImageExtension(url: string) {
 }
 
 export function imageLoader({ src, width, quality }: ImageLoaderProps) {
-  return `${process.env.NEXT_PUBLIC_IMAGE_API_URL}/${src}?w=${width}&q=${
+  return `${process.env.NEXT_PUBLIC_EZBIZ_BACKEND_URL}/${src}?w=${width}&q=${
     quality || 75
   }`;
 }
