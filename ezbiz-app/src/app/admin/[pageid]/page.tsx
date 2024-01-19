@@ -1,6 +1,6 @@
 "use client";
 
-import PageDetailsFileUpload from "@/components/PageDetailsFileUpload";
+import PageContentFileUpload from "@/components/PageContentFileUpload";
 import TiptapEditor from "@/components/TiptapEditor";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,14 +25,12 @@ import {
   defaultSocialMedias,
 } from "@/interfaces/content";
 import { demoPageDetails } from "@/lib/mockdata";
-import { updateContent } from "@/services/content";
+import { getContentById, updateContent } from "@/services/content";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Sketch } from "@uiw/react-color";
-import { useEffect } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
-import { getContentById } from "@/services/content";
+import { toast } from "sonner";
 
 export default function Page({ params }: { params: { pageid: string } }) {
   const content = useQuery(
@@ -47,8 +45,10 @@ export default function Page({ params }: { params: { pageid: string } }) {
     }
   );
 
+  const defaultSaveDir = `pages/${params.pageid}`;
+
   console.log(content.data);
-  // console.log(params);
+  console.log(params);
   const form = useForm<ContentValues>({
     resolver: zodResolver(contentSchema),
     defaultValues: content.data || demoPageDetails,
@@ -86,10 +86,6 @@ export default function Page({ params }: { params: { pageid: string } }) {
     });
   }
 
-  // useEffect(() => {
-  //   mergeSocialMedias();
-  // }, []);
-
   if (content.isLoading) {
     return <div>Loading...</div>;
   }
@@ -114,15 +110,12 @@ export default function Page({ params }: { params: { pageid: string } }) {
                     Background Image
                   </FormLabel>
                   <div className="mt-2 sm:col-span-2 sm:mt-0">
-                    <PageDetailsFileUpload
-                      field={field}
-                      accept="image/*"
-                      color={themeColor}
-                    />
                     <FormControl>
-                      <Input
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                        {...field}
+                      <PageContentFileUpload
+                        field={field}
+                        accept="image/*"
+                        color={themeColor}
+                        saveDir={`${defaultSaveDir}`}
                       />
                     </FormControl>
                     {/* </PageDetailsFileUpload> */}
@@ -183,15 +176,12 @@ export default function Page({ params }: { params: { pageid: string } }) {
                     Profile Picture
                   </FormLabel>
                   <div className="mt-2 sm:col-span-2 sm:mt-0">
-                    <PageDetailsFileUpload
-                      field={field}
-                      accept="image/*"
-                      color={themeColor}
-                    />
                     <FormControl>
-                      <Input
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                        {...field}
+                      <PageContentFileUpload
+                        field={field}
+                        accept="image/*"
+                        color={themeColor}
+                        saveDir={`${defaultSaveDir}`}
                       />
                     </FormControl>
                     <FormMessage />
@@ -211,15 +201,12 @@ export default function Page({ params }: { params: { pageid: string } }) {
                     Company Logo
                   </FormLabel>
                   <div className="mt-2 sm:col-span-2 sm:mt-0">
-                    <PageDetailsFileUpload
-                      field={field}
-                      accept="image/*"
-                      color={themeColor}
-                    />
                     <FormControl>
-                      <Input
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                        {...field}
+                      <PageContentFileUpload
+                        field={field}
+                        accept="image/*"
+                        color={themeColor}
+                        saveDir={`${defaultSaveDir}`}
                       />
                     </FormControl>
                     <FormDescription>
@@ -440,18 +427,15 @@ export default function Page({ params }: { params: { pageid: string } }) {
                           <FormLabel className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">
                             {`Gallery ${index + 1}`}
                           </FormLabel>
-                          <PageDetailsFileUpload
-                            field={field}
-                            accept="image/*"
-                            color={themeColor}
-                          />
+
                           <FormControl>
-                            <Input
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                              {...field}
+                            <PageContentFileUpload
+                              field={field}
+                              accept="image/*"
+                              color={themeColor}
+                              saveDir={`${defaultSaveDir}`}
                             />
                           </FormControl>
-                          {/* </PageDetailsFileUpload> */}
                           <FormMessage />
                         </FormItem>
                         <Separator className="my-2" />
@@ -462,8 +446,7 @@ export default function Page({ params }: { params: { pageid: string } }) {
               </div>
             </div>
 
-            {/* Location */}
-
+            {/* Short Description */}
             <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
               <label className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">
                 Short Description

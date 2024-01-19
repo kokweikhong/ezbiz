@@ -16,11 +16,11 @@ import { createDefaultContent, getContentsByUserId } from "@/services/content";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderIcon, PlusIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import Link from "next/link";
+import { toast } from "sonner";
 
 const people = [
   {
@@ -81,7 +81,7 @@ export default function Page() {
     },
   });
 
-  console.log(contents.data);
+  // console.log(contents.data);
 
   const form = useForm<DefaultContentValues>({
     resolver: zodResolver(defaultContentSchema),

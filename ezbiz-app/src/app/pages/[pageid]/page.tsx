@@ -1,10 +1,13 @@
-import qrCodeSvg from "@/../public/svg/qrcode.svg";
 import shareSvg from "@/../public/svg/share.svg";
+import PageAbout from "@/components/PageAbout";
 import PageFooter from "@/components/PageFooter";
-import PageImageSlider from "@/components/PageImageSlider";
-import { Button } from "@/components/ui/button";
+import PageGallery from "@/components/PageGallery";
+import PageQrcodeDialog from "@/components/PageQrcodeDialog";
+import PageSaveContact from "@/components/PageSaveContact";
+import QrcodeVCard from "@/components/QrcodeVCard";
+import { isWithImageExtension } from "@/lib/image";
 import { demoPageDetails as data } from "@/lib/mockdata";
-import { cn, isWithImageExtension } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 export default function Page({ params }: { params: { pageid: string } }) {
@@ -36,18 +39,21 @@ export default function Page({ params }: { params: { pageid: string } }) {
           )}
         >
           <div className="w-full flex justify-between p-[10px]">
+            <PageQrcodeDialog themeColor={data.themeColor}>
+              <div className="mx-auto md:mr-auto md:w-full">
+                <QrcodeVCard
+                  name="Zen Lai"
+                  email="asdad@asdads.com"
+                  phone="0123456789"
+                  website="https://google.com"
+                />
+              </div>
+            </PageQrcodeDialog>
             <button
               style={{ backgroundColor: data.themeColor }}
               className="p-[10px] shadow-lg rounded-lg"
             >
               <Image src={shareSvg} alt="share" width={29} height={29} />
-            </button>
-
-            <button
-              style={{ backgroundColor: data.themeColor }}
-              className="p-[10px] shadow-lg rounded-lg"
-            >
-              <Image src={qrCodeSvg} alt="qr code" width={29} height={29} />
             </button>
           </div>
 
@@ -55,6 +61,7 @@ export default function Page({ params }: { params: { pageid: string } }) {
             {data.profilePicture &&
               isWithImageExtension(data.profilePicture) && (
                 <Image
+                  // loader={imageLoader}
                   src={data.profilePicture}
                   alt="profile picture"
                   width={172}
@@ -70,40 +77,23 @@ export default function Page({ params }: { params: { pageid: string } }) {
           </div>
 
           <div className="mt-[20px] font-semibold">
-            <Button
-              style={{ backgroundColor: data.themeColor }}
-              className="text-white px-[25px] py-[15px] rounded-[50px] text-[14pt] font-semibold"
-              asChild
-            >
-              <a href="#">Save Contact</a>
-            </Button>
+            <PageSaveContact
+              name="Zen Lai"
+              email="asdad@asdads.com"
+              phone="0123456789"
+              website="https://google.com"
+              themeColor={data.themeColor}
+            />
           </div>
         </div>
       </section>
 
       <section className={cn(sectionClass, "mt-[30px]")}>
-        <h2
-          style={{ color: data.themeColor }}
-          className="text-3xl font-semibold mb-[20px]"
-        >
-          About
-        </h2>
-        <article
-          className="prose lg:prose-xl text-[#808080]"
-          dangerouslySetInnerHTML={{ __html: data.content as string }}
-        ></article>
+        <PageAbout content={data.content} themeColor={data.themeColor} />
       </section>
 
       <section className={cn(sectionClass, "mt-[30px]")}>
-        <h2
-          style={{ color: data.themeColor }}
-          className="text-3xl font-semibold mb-[20px]"
-        >
-          Gallery
-        </h2>
-        <div>
-          <PageImageSlider images={data.gallery ?? []} />
-        </div>
+        <PageGallery themeColor={data.themeColor} images={data.gallery ?? []} />
       </section>
 
       <section className="mt-[30px] bg-[#3a3a3a]">

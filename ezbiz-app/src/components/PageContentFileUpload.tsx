@@ -10,18 +10,18 @@ import { FC, InputHTMLAttributes, useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 import { toast } from "sonner";
 
-type PageDetailsFileUploadProps = {
-  // children: React.ReactNode;
+type PageContentFileUploadProps = {
   field: ControllerRenderProps<ContentValues, any>;
   accept?: InputHTMLAttributes<HTMLInputElement>["accept"];
   color?: string;
+  saveDir: string;
 };
 
-const PageDetailsFileUpload: FC<PageDetailsFileUploadProps> = ({
-  // children,
+const PageContentFileUpload: FC<PageContentFileUploadProps> = ({
   field,
   accept,
   color = "blue",
+  saveDir,
 }) => {
   const [file, setFile] = useState<File | null>(null);
 
@@ -34,13 +34,12 @@ const PageDetailsFileUpload: FC<PageDetailsFileUploadProps> = ({
     if (!file) return;
     const data = new FormData();
     data.append("file", file);
-    data.append("saveDir", "pages");
+    data.append("saveDir", saveDir);
     toast.promise(uploadFile(data), {
       loading: "Uploading file...",
       success(data) {
         field.onChange(data);
         setFile(file);
-        console.log(data);
         return "File uploaded successfully";
       },
       error(error) {
@@ -65,7 +64,6 @@ const PageDetailsFileUpload: FC<PageDetailsFileUploadProps> = ({
               isWithImageExtension(field.value)
                 ? `${backendUrl}/${field.value}`
                 : URL.createObjectURL(file as Blob)
-              // URL.createObjectURL(file as Blob)
             }
             width={40}
             height={40}
@@ -94,7 +92,7 @@ const PageDetailsFileUpload: FC<PageDetailsFileUploadProps> = ({
           accept={accept || "image/*"}
           // defaultValue={field.value || ""}
           className="hidden"
-          value={field.value || ""}
+          // value={field.value || ""}
           onChange={(e) => {
             toast("Are you confirm to upload file to server?", {
               action: {
@@ -111,9 +109,12 @@ const PageDetailsFileUpload: FC<PageDetailsFileUploadProps> = ({
           }}
         />
       </label>
-      {/* {children} */}
+
+      <span className="block w-full rounded-md py-1.5 text-gray-900 shadow-sm sm:max-w-xs sm:text-sm sm:leading-6">
+        {field.value}
+      </span>
     </div>
   );
 };
 
-export default PageDetailsFileUpload;
+export default PageContentFileUpload;

@@ -75,7 +75,7 @@
   }
 }
 
-.tiptap.ProseMirror {
+:not(.tiptap-content) > .tiptap.ProseMirror {
   width: "100%";
   padding: 8px 16px;
   border: 2px solid #e2e8f0;
