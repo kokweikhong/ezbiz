@@ -56,6 +56,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({
 }) => {
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={disabled && disabled}
       className={cn(

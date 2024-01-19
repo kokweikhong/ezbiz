@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -16,7 +17,8 @@ type ContentController interface {
 	CreateContent(w http.ResponseWriter, r *http.Request)
 	UpdateContent(w http.ResponseWriter, r *http.Request)
 	DeleteContent(w http.ResponseWriter, r *http.Request)
-	GetContentByUserId(w http.ResponseWriter, r *http.Request)
+	GetContentByUrl(w http.ResponseWriter, r *http.Request)
+	GetContentsByUserId(w http.ResponseWriter, r *http.Request)
 	CreateDefaultContent(w http.ResponseWriter, r *http.Request)
 }
 
@@ -76,6 +78,7 @@ func (c *contentController) UpdateContent(w http.ResponseWriter, r *http.Request
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
+        slog.Error("UpdateContent", "err", err.Error())
 		c.jsonH.ResponseError(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -110,15 +113,27 @@ func (c *contentController) DeleteContent(w http.ResponseWriter, r *http.Request
 	c.jsonH.ResponseJSON(w, http.StatusOK, nil)
 }
 
-func (c *contentController) GetContentByUserId(w http.ResponseWriter, r *http.Request) {
-	userIdStr := chi.URLParam(r, "userid")
-	userId, err := strconv.ParseInt(userIdStr, 10, 64)
+func (c *contentController) GetContentByUrl(w http.ResponseWriter, r *http.Request) {
+	url := chi.URLParam(r, "url")
+
+	contents, err := c.srv.GetContentByUrl(url)
+	if err != nil {
+		c.jsonH.ResponseError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.jsonH.ResponseJSON(w, http.StatusOK, contents)
+}
+
+func (c *contentController) GetContentsByUserId(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
 		c.jsonH.ResponseError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	contents, err := c.srv.GetContentByUserId(userId)
+	contents, err := c.srv.GetContentsByUserId(id)
 	if err != nil {
 		c.jsonH.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -129,13 +144,13 @@ func (c *contentController) GetContentByUserId(w http.ResponseWriter, r *http.Re
 
 func (c *contentController) CreateDefaultContent(w http.ResponseWriter, r *http.Request) {
 	data := struct {
-		UserId      int64  `json:"userId"`
-		DisplayName string `json:"displayName"`
+		UserId int64  `json:"userId"`
+		Url    string `json:"url"`
 	}{}
 
 	c.jsonH.ReadJSON(w, r, &data)
 
-	pk, err := c.srv.CreateDefaultContent(data.UserId, data.DisplayName)
+	pk, err := c.srv.CreateDefaultContent(data.UserId, data.Url)
 	if err != nil {
 		c.jsonH.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return

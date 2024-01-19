@@ -11,30 +11,31 @@ import { ControllerRenderProps } from "react-hook-form";
 import { toast } from "sonner";
 
 type PageContentFileUploadProps = {
+  id: string;
   field: ControllerRenderProps<ContentValues, any>;
   accept?: InputHTMLAttributes<HTMLInputElement>["accept"];
   color?: string;
   saveDir: string;
+  newFilename?: string;
 };
 
 const PageContentFileUpload: FC<PageContentFileUploadProps> = ({
+  id,
   field,
   accept,
   color = "blue",
   saveDir,
+  newFilename = "",
 }) => {
   const [file, setFile] = useState<File | null>(null);
 
-  const backendUrl = process.env.NEXT_PUBLIC_EZBIZ_BACKEND_URL;
-
-  console.log(backendUrl);
-
-  async function handleFileOnChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleFileOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.item(0);
     if (!file) return;
     const data = new FormData();
     data.append("file", file);
     data.append("saveDir", saveDir);
+    data.append("newFilename", newFilename);
     toast.promise(uploadFile(data), {
       loading: "Uploading file...",
       success(data) {
@@ -59,15 +60,15 @@ const PageContentFileUpload: FC<PageContentFileUploadProps> = ({
         {isWithImageExtension(field.value) || file ? (
           <Image
             loader={imageLoader}
-            placeholder="empty"
             src={
               isWithImageExtension(field.value)
-                ? `${backendUrl}/${field.value}`
+                ? `${field.value}`
                 : URL.createObjectURL(file as Blob)
             }
             width={40}
             height={40}
             alt="file"
+            priority
             className="w-[280px] h-auto object-cover"
           />
         ) : (
@@ -88,6 +89,7 @@ const PageContentFileUpload: FC<PageContentFileUploadProps> = ({
         </svg>
         <span className="ml-2 text-sm leading-normal">Select a file</span>
         <input
+          id={id}
           type="file"
           accept={accept || "image/*"}
           // defaultValue={field.value || ""}

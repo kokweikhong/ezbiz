@@ -3,6 +3,7 @@ package model
 type Content struct {
 	Id              int64     `json:"id" db:"id"`
 	UserId          int64     `json:"userId" db:"user_id"`
+	Url             string    `json:"url" db:"url"`
 	BackgroundImage string    `json:"backgroundImage" db:"background_image"`
 	ThemeColor      string    `json:"themeColor" db:"theme_color"`
 	ProfilePicture  string    `json:"profilePicture" db:"profile_picture"`

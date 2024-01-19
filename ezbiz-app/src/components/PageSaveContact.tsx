@@ -21,16 +21,16 @@ const PageSaveContact: React.FC<PageSaveContactProps> = ({
 }) => {
   const vcfRef = React.useRef<HTMLAnchorElement>(null);
   const [url, setUrl] = React.useState<string>("");
+  // const [download, setDownload] = React.useState<string>("");
   const myVCard = new VCard();
 
   myVCard.addName(name).addEmail(email).addPhoneNumber(phone).addURL(website);
 
-  var blob = new Blob([myVCard.toString()], { type: "text/vcard" });
-
-  vcfRef.current?.download && (vcfRef.current.download = "contact.vcf");
   React.useEffect(() => {
+    var blob = new Blob([myVCard.toString()], { type: "text/vcard" });
     if (typeof window !== "undefined") {
       setUrl(window.URL.createObjectURL(blob));
+      // vcfRef.current?.download && (vcfRef.current.download = "contact.vcf");
     }
   }, []);
 
@@ -41,7 +41,9 @@ const PageSaveContact: React.FC<PageSaveContactProps> = ({
         className="text-white px-[25px] py-[15px] rounded-[50px] text-[14pt] font-semibold"
         asChild
       >
-        <a href={url}>Save Contact</a>
+        <a href={url} download={"contact.vcf"}>
+          Save Contact
+        </a>
       </Button>
     </div>
   );

@@ -18,8 +18,9 @@ type ContentService interface {
 	CreateContent(content *model.Content) (int64, error)
 	UpdateContent(content *model.Content) (*model.Content, error)
 	DeleteContent(id int64) error
-	GetContentByUserId(userId int64) ([]*model.Content, error)
-	CreateDefaultContent(userId int64, displayName string) (int64, error)
+	GetContentByUrl(url string) (*model.Content, error)
+	GetContentsByUserId(userId int64) ([]*model.Content, error)
+	CreateDefaultContent(userId int64, url string) (int64, error)
 }
 
 type contentService struct {
@@ -37,6 +38,7 @@ func (s *contentService) GetContents() ([]*model.Content, error) {
 	query := `SELECT
 				id,
 				user_id,
+				url,
 				background_image,
 				theme_color,
 				profile_picture,
@@ -74,6 +76,7 @@ func (s *contentService) GetContents() ([]*model.Content, error) {
 		err := rows.Scan(
 			&content.Id,
 			&content.UserId,
+			&content.Url,
 			&content.BackgroundImage,
 			&content.ThemeColor,
 			&content.ProfilePicture,
@@ -114,6 +117,7 @@ func (s *contentService) GetContent(id int64) (*model.Content, error) {
 	query := `SELECT
 				id,
 				user_id,
+				url,
 				background_image,
 				theme_color,
 				profile_picture,
@@ -145,6 +149,7 @@ func (s *contentService) GetContent(id int64) (*model.Content, error) {
 	err = stmt.QueryRow(id).Scan(
 		&content.Id,
 		&content.UserId,
+		&content.Url,
 		&content.BackgroundImage,
 		&content.ThemeColor,
 		&content.ProfilePicture,
@@ -179,6 +184,7 @@ func (s *contentService) GetContent(id int64) (*model.Content, error) {
 func (s *contentService) CreateContent(content *model.Content) (int64, error) {
 	query := `INSERT INTO contents (
                 user_id,
+				url,
 				background_image,
 				theme_color,
 				profile_picture,
@@ -196,7 +202,7 @@ func (s *contentService) CreateContent(content *model.Content) (int64, error) {
 				expire_at,
 				created_at,
 				updated_at
-			) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+			) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
 			RETURNING id`
 
 	stmt, err := s.db.Prepare(query)
@@ -220,6 +226,7 @@ func (s *contentService) CreateContent(content *model.Content) (int64, error) {
 
 	err = stmt.QueryRow(
 		content.UserId,
+		content.Url,
 		content.BackgroundImage,
 		content.ThemeColor,
 		content.ProfilePicture,
@@ -268,8 +275,9 @@ func (s *contentService) UpdateContent(content *model.Content) (*model.Content, 
 				gallery = $14,
 				is_active = $15,
 				expire_at = $16,
-				updated_at = $17
-			WHERE id = $15`
+				updated_at = $17,
+				url = $18
+			WHERE id = $19`
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
@@ -301,6 +309,7 @@ func (s *contentService) UpdateContent(content *model.Content) (*model.Content, 
 		content.IsActive,
 		content.ExpireAt,
 		"now()",
+		content.Url,
 		content.Id,
 	)
 	if err != nil {
@@ -329,11 +338,12 @@ func (s *contentService) DeleteContent(id int64) error {
 	return nil
 }
 
-func (s *contentService) GetContentByUserId(userId int64) ([]*model.Content, error) {
-	contents := []*model.Content{}
+func (s *contentService) GetContentByUrl(url string) (*model.Content, error) {
+    content := new(model.Content)
 	query := `SELECT
 				id,
 				user_id,
+				url,
 				background_image,
 				theme_color,
 				profile_picture,
@@ -352,7 +362,76 @@ func (s *contentService) GetContentByUserId(userId int64) ([]*model.Content, err
 				created_at,
 				updated_at
 			FROM contents
-			WHERE user_id = $1`
+			WHERE url = $1`
+
+	stmt, err := s.db.Prepare(query)
+	if err != nil {
+		slog.Error("Error preparing content query", "error", err)
+		return nil, err
+	}
+
+    socialMediasJson := []byte{}
+
+	err = stmt.QueryRow(url).Scan(
+        &content.Id,
+        &content.UserId,
+        &content.Url,
+        &content.BackgroundImage,
+        &content.ThemeColor,
+        &content.ProfilePicture,
+        &content.CompanyLogo,
+        &content.DisplayName,
+        &content.BusinessTagline,
+        &content.ContactNo,
+        &content.EmailAddress,
+        &content.Website,
+        &socialMediasJson,
+        &content.Location,
+        &content.Content,
+        pq.Array(&content.Gallery),
+        &content.IsActive,
+        &content.ExpireAt,
+        &content.CreatedAt,
+        &content.UpdatedAt,
+    )
+    if err != nil {
+        slog.Error("Error scanning content", "error", err)
+        return nil, err
+    }
+
+    if err := json.Unmarshal(socialMediasJson, &content.SocialMedias); err != nil {
+        slog.Error("Error unmarshalling social medias", "error", err)
+        return nil, err
+    }
+
+    return content, nil
+}
+
+func (s *contentService) GetContentsByUserId(userId int64) ([]*model.Content, error) {
+	contents := []*model.Content{}
+	query := `SELECT
+                id,
+                user_id,
+                url,
+                background_image,
+                theme_color,
+                profile_picture,
+                company_logo,
+                display_name,
+                business_tagline,
+                contact_no,
+                email_address,
+                website,
+                social_medias,
+                location,
+                content,
+                gallery,
+                is_active,
+                expire_at,
+                created_at,
+                updated_at
+            FROM contents
+            WHERE user_id = $1`
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
@@ -372,6 +451,7 @@ func (s *contentService) GetContentByUserId(userId int64) ([]*model.Content, err
 		err := rows.Scan(
 			&content.Id,
 			&content.UserId,
+			&content.Url,
 			&content.BackgroundImage,
 			&content.ThemeColor,
 			&content.ProfilePicture,
@@ -407,28 +487,29 @@ func (s *contentService) GetContentByUserId(userId int64) ([]*model.Content, err
 	return contents, nil
 }
 
-func (s *contentService) CreateDefaultContent(userId int64, displayName string) (int64, error) {
-	if displayName == "" {
+func (s *contentService) CreateDefaultContent(userId int64, url string) (int64, error) {
+	if url == "" {
 		// generate new uuid
 		uuid, err := uuid.NewRandom()
 		if err != nil {
 			slog.Error("Error generating uuid", "error", err)
 			return -1, err
 		}
-		displayName = uuid.String()
+		url = uuid.String()
 	}
 
 	content := &model.Content{
 		UserId:          userId,
 		ThemeColor:      "#048c81",
-		DisplayName:     displayName,
+		Url:             url,
+		DisplayName:     "Your Name",
 		BusinessTagline: "Your Tagline",
 		ContactNo:       "60123456789",
 		EmailAddress:    "unknown@unknown.com",
 		Website:         "https://unknown.com",
 		Location:        "Unknown",
 		Content:         "<p>Content</p>",
-		Gallery:         []string{},
+		Gallery:         []string{"", "", "", "", "", "", "", "", "", ""},
 		IsActive:        true,
 	}
 

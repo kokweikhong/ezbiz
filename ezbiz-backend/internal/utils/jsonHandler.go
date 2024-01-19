@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 )
 
@@ -20,7 +21,9 @@ func NewJsonHandler() JsonHandler {
 func (h *jsonHandler) ReadJSON(w http.ResponseWriter, r *http.Request, payload interface{}) {
 	err := json.NewDecoder(r.Body).Decode(payload)
 	if err != nil {
+		slog.Error("ReadJSON", "err", err.Error())
 		h.ResponseError(w, http.StatusBadRequest, err.Error())
+		return
 	}
 }
 

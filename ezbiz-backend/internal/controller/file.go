@@ -51,8 +51,10 @@ func (c *fileController) UploadFile(w http.ResponseWriter, r *http.Request) {
 
 	filenameWithDir := filepath.Join(saveDir, handler.Filename)
 
+	newFilename := r.FormValue("newFilename")
+
 	// create file
-	filename, err := c.srv.UploadFile(fileBytes, filenameWithDir)
+	filename, err := c.srv.UploadFile(fileBytes, filenameWithDir, newFilename)
 	if err != nil {
 		c.jsonH.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return

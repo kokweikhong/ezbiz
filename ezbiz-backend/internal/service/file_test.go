@@ -17,7 +17,7 @@ func TestUploadFile(t *testing.T) {
 	// dir and file name
 	fileName := "avatar/test.jpg"
 
-	fileName, err = fileService.UploadFile(file, fileName)
+	fileName, err = fileService.UploadFile(file, fileName, "")
 	if err != nil {
 		t.Error(err)
 	}

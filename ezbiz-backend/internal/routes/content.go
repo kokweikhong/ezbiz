@@ -13,7 +13,8 @@ func NewContentRoutes(r chi.Router) {
 		r.Post("/", c.CreateContent)
 		r.Put("/{id}", c.UpdateContent)
 		r.Delete("/{id}", c.DeleteContent)
-		r.Get("/user/{userid}", c.GetContentByUserId)
+		r.Get("/url/{url}", c.GetContentByUrl)
+		r.Get("/user/{id}", c.GetContentsByUserId)
 		r.Post("/user/create", c.CreateDefaultContent)
 	})
 }

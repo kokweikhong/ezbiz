@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS "socials" (
 CREATE TABLE IF NOT EXISTS "contents" (
     "id" SERIAL PRIMARY KEY,
     "user_id" INTEGER NOT NULL,
+    "url" VARCHAR(255) NOT NULL UNIQUE DEFAULT '',
     "background_image" VARCHAR(255) NOT NULL DEFAULT '',
     "theme_color" VARCHAR(255) NOT NULL DEFAULT '',
     "profile_picture" VARCHAR(255) NOT NULL DEFAULT '',

@@ -1,7 +1,8 @@
+import { url } from "inspector";
 import { z } from "zod";
 
 export const socialMediaSchema = z.object({
-  id: z.string().optional(),
+  id: z.number().int().positive().optional(),
   name: z.string().optional(),
   url: z.string().optional(),
   imagePath: z.string().optional(),
@@ -15,6 +16,13 @@ export type SocialMediaValues = z.infer<typeof socialMediaSchema>;
 export const contentSchema = z.object({
   id: z.number().int().positive().optional(),
   userId: z.number().int().positive(),
+  // error if url is contains any special characters except - (hyphen)
+  // also no spaces allowed
+  url: z
+    .string()
+    .regex(/^[a-zA-Z0-9-]+$/, "URL can only contain letters, numbers, and -")
+    .min(3, "URL must be at least 3 characters long.")
+    .max(30, "URL must be at most 30 characters long."),
   backgroundImage: z.string().optional(),
   themeColor: z.string().optional(),
   profilePicture: z.string().optional(),
@@ -40,78 +48,68 @@ export type ContentValues = z.infer<typeof contentSchema>;
 
 export const defaultContentSchema = z.object({
   userId: z.number(),
-  displayName: z
+  url: z
     .string()
-    .min(3, "Display name must be at least 3 characters long."),
+    .regex(/^[a-zA-Z0-9-]+$/, "URL can only contain letters, numbers, and -")
+    .min(3, "URL must be at least 3 characters long.")
+    .max(30, "URL must be at most 30 characters long."),
 });
 
 export type DefaultContentValues = z.infer<typeof defaultContentSchema>;
 
 export const defaultSocialMedias: SocialMediaValues[] = [
   {
-    id: "facebook",
+    id: 0,
     name: "Facebook",
     placeholder: "https://facebook.com/",
     url: "",
   },
   {
-    id: "twitter",
+    id: 1,
     name: "Twitter",
     placeholder: "https://twitter.com/",
     url: "",
   },
   {
-    id: "instagram",
+    id: 2,
     name: "Instagram",
     placeholder: "https://instagram.com/",
     url: "",
   },
   {
-    id: "linkedin",
+    id: 3,
     name: "LinkedIn",
     placeholder: "https://linkedin.com/in/",
     url: "",
   },
   {
-    id: "youtube",
+    id: 4,
     name: "YouTube",
     placeholder: "https://youtube.com/channel/",
     url: "",
   },
   {
-    id: "tiktok",
+    id: 5,
     name: "TikTok",
     placeholder: "https://tiktok.com/@",
     url: "",
   },
   {
-    id: "pinterest",
+    id: 6,
     name: "Pinterest",
     placeholder: "https://pinterest.com/",
     url: "",
   },
   {
-    id: "tumblr",
+    id: 7,
     name: "Tumblr",
     placeholder: "https://tumblr.com/",
     url: "",
   },
   {
-    id: "snapchat",
+    id: 8,
     name: "Snapchat",
     placeholder: "https://snapchat.com/add/",
-    url: "",
-  },
-  {
-    id: "reddit",
-    name: "Reddit",
-    placeholder: "https://reddit.com/user/",
-    url: "",
-  },
-  {
-    id: "github",
-    name: "GitHub",
-    placeholder: "https://github.com/",
     url: "",
   },
 ];

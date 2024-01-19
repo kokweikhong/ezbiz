@@ -6,7 +6,7 @@ import (
 )
 
 type FileService interface {
-	UploadFile(file []byte, fileName string) (string, error)
+	UploadFile(file []byte, fileName, newFilename string) (string, error)
 	DeleteFile(fileName string) error
 	GetFiles() ([]string, error)
 }
@@ -25,11 +25,14 @@ func defaultUploadPathWithWorkingDir() string {
 	return filepath.Join(wd, defaultUploadPath)
 }
 
-func (s *fileService) UploadFile(file []byte, fileName string) (string, error) {
+func (s *fileService) UploadFile(file []byte, fileName, newFilename string) (string, error) {
+	ext := filepath.Ext(fileName)
 	// get the filename only without dir and extension
-	newFileName := filepath.Base(fileName)
-	ext := filepath.Ext(newFileName)
-	newFileName = newFileName[0 : len(newFileName)-len(ext)]
+	if newFilename == "" {
+		newFilename = filepath.Base(fileName)
+		newFilename = newFilename[0 : len(newFilename)-len(ext)]
+	}
+	newFilename = newFilename + ext
 
 	// get the dir only without filename
 	dir := filepath.Dir(fileName)
@@ -42,7 +45,7 @@ func (s *fileService) UploadFile(file []byte, fileName string) (string, error) {
 		}
 	}
 
-	fullPath := filepath.Join(defaultUploadPath, dir, newFileName+ext)
+	fullPath := filepath.Join(defaultUploadPath, dir, newFilename)
 
 	// create the file
 	f, err := os.Create(fullPath)

@@ -8,19 +8,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import AdminNoProjects from "@/components/AdminNoProjects";
 import {
   DefaultContentValues,
   defaultContentSchema,
 } from "@/interfaces/content";
 import { createDefaultContent, getContentsByUserId } from "@/services/content";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FolderIcon, PlusIcon } from "lucide-react";
+import { FolderIcon, PlusIcon, ImageOffIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "sonner";
+import Image from "next/image";
+import { imageLoader } from "@/lib/image";
 
 const people = [
   {
@@ -87,7 +90,7 @@ export default function Page() {
     resolver: zodResolver(defaultContentSchema),
     defaultValues: {
       userId: parseInt(session ? session.user.id : "0"),
-      displayName: "",
+      url: "",
     },
   });
 
@@ -95,7 +98,10 @@ export default function Page() {
     console.log(data);
     toast.promise(createDefaultContentMutate(data), {
       loading: "Creating new project...",
-      success: "Project created successfully",
+      success(data) {
+        form.reset();
+        return `New project created: ${data}`;
+      },
       error(error) {
         return error.message;
       },
@@ -143,20 +149,20 @@ export default function Page() {
 
             <FormField
               control={form.control}
-              name="displayName"
+              name="url"
               defaultValue=""
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormLabel htmlFor="displayName" className="sr-only">
-                    Display name
+                  <FormLabel htmlFor="url" className="sr-only">
+                    URL
                   </FormLabel>
                   <div className="grid grid-cols-1 sm:flex-auto">
                     <FormControl>
                       <input
                         type="text"
-                        id="displayName"
+                        id="url"
                         className="peer relative col-start-1 row-start-1 border-0 bg-transparent py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                        placeholder="Enter a new project name"
+                        placeholder="Enter a new project url"
                         {...field}
                       />
                     </FormControl>
@@ -184,47 +190,54 @@ export default function Page() {
         <h3 className="text-sm font-medium text-gray-500">
           All projects you have access to
         </h3>
-        <div className="w-full flex justify-between">
-          {contents.data?.map((content) => (
-            <Link href={`/admin/${content.id}`} key={content.id}>
-              {content.id}
-            </Link>
-          ))}
-        </div>
-        <ul role="list" className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {people.map((person, personIdx) => (
-            <li key={personIdx}>
-              <button
-                type="button"
-                className="group flex w-full items-center justify-between space-x-3 rounded-full border border-gray-300 p-2 text-left shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                <span className="flex min-w-0 flex-1 items-center space-x-3">
-                  <span className="block flex-shrink-0">
-                    <img
-                      className="h-10 w-10 rounded-full"
-                      src={person.imageUrl}
-                      alt=""
+        {contents.data?.length === 0 ? (
+          <div className="w-full py-8">
+            <AdminNoProjects />
+          </div>
+        ) : (
+          <ul
+            role="list"
+            className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2"
+          >
+            {contents.data?.map((content) => (
+              <li key={content.url}>
+                <Link
+                  href={`/admin/${content.id}`}
+                  className="group flex w-full items-center justify-between space-x-3 rounded-full border border-gray-300 p-2 text-left shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  <span className="flex min-w-0 flex-1 items-center space-x-3">
+                    <span className="block flex-shrink-0">
+                      {content.profilePicture ? (
+                        <Image
+                          loader={imageLoader}
+                          src={content.profilePicture}
+                          alt={content.displayName}
+                          className="h-10 w-10 rounded-full"
+                        />
+                      ) : (
+                        <ImageOffIcon className="h-10 w-10 rounded-full text-gray-500" />
+                      )}
+                    </span>
+                    <span className="block min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium text-gray-900">
+                        {content.displayName}
+                      </span>
+                      <span className="block truncate text-sm font-medium text-gray-500">
+                        {content.url}
+                      </span>
+                    </span>
+                  </span>
+                  <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center">
+                    <PlusIcon
+                      className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                      aria-hidden="true"
                     />
                   </span>
-                  <span className="block min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium text-gray-900">
-                      {person.name}
-                    </span>
-                    <span className="block truncate text-sm font-medium text-gray-500">
-                      {person.role}
-                    </span>
-                  </span>
-                </span>
-                <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center">
-                  <PlusIcon
-                    className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                    aria-hidden="true"
-                  />
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

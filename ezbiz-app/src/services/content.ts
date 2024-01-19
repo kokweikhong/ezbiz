@@ -4,8 +4,16 @@ import type { ContentValues, DefaultContentValues } from "@/interfaces/content";
 import axios from "axios";
 
 const axiosContent = axios.create({
-  baseURL: `${process.env.EZBIZ_BACKEND_URL}/contents`,
+  baseURL: `${process.env.NEXT_PUBLIC_EZBIZ_BACKEND_URL}/contents`,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
+
+export async function getContentsByUrl(url: string): Promise<ContentValues> {
+  const res = await axiosContent.get(`/url/${url}`);
+  return res.data;
+}
 
 export async function getContentsByUserId(
   userId: string
@@ -31,12 +39,7 @@ export async function createDefaultContent(data: DefaultContentValues) {
 
 export async function updateContent(data: ContentValues) {
   const id = data.id;
-  const res = await axiosContent.put(`/user/${id}`, data, {
-    // json
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const res = await axiosContent.put(`/${id}`, data);
 
   return res.data;
 }
