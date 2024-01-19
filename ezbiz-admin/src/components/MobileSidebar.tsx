@@ -1,8 +1,10 @@
 "use client";
 
+import logo from "@/../public/logo.jpg";
 import { cn } from "@/lib/utils";
 import { Dialog, Transition } from "@headlessui/react";
 import { CogIcon, XIcon } from "lucide-react";
+import Image from "next/image";
 import { FC, Fragment } from "react";
 import { NavigationItem } from "./Layout";
 
@@ -69,11 +71,12 @@ const MobileSidebar: FC<MobileSidebarProps> = ({
               </Transition.Child>
               {/* Sidebar component, swap this element with another sidebar if you like */}
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
-                <div className="flex h-16 shrink-0 items-center">
-                  <img
-                    className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                    alt="Your Company"
+                <div className="flex h-24 shrink-0 items-center">
+                  <Image
+                    className="h-14 w-auto"
+                    src={logo}
+                    alt="Ezbiz Admin"
+                    priority
                   />
                 </div>
                 <nav className="flex flex-1 flex-col">

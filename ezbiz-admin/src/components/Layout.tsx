@@ -1,14 +1,13 @@
 "use client";
 
 import {
-  CalendarIcon,
-  FilesIcon,
   FolderIcon,
   HomeIcon,
-  PieChartIcon,
+  LinkedinIcon,
   UsersIcon,
   type LucideIcon,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 import React from "react";
 import DesktopSidebar from "./DesktopSidebar";
 import Header from "./Header";
@@ -25,17 +24,28 @@ export type NavigationItem = {
   current: boolean;
 };
 
-const navigation: NavigationItem[] = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Team", href: "#", icon: UsersIcon, current: false },
-  { name: "Projects", href: "#", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Documents", href: "#", icon: FilesIcon, current: false },
-  { name: "Reports", href: "#", icon: PieChartIcon, current: false },
-];
-
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
+  const [navigation, setNavigation] = React.useState<NavigationItem[]>([
+    { name: "Dashboard", href: "/", icon: HomeIcon, current: false },
+    { name: "Users", href: "/users", icon: UsersIcon, current: false },
+    { name: "Pages", href: "/pages", icon: FolderIcon, current: false },
+    { name: "Socials", href: "/socials", icon: LinkedinIcon, current: false },
+    // { name: "Documents", href: "#", icon: FilesIcon, current: false },
+    // { name: "Reports", href: "#", icon: PieChartIcon, current: false },
+  ]);
+
+  React.useEffect(() => {
+    setNavigation(
+      navigation.map((item) => ({
+        ...item,
+        current: item.href === pathname,
+      }))
+    );
+  }, [pathname]);
+
   return (
     <div>
       <MobileSidebar
@@ -44,7 +54,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         navigation={navigation}
       />
 
-      <DesktopSidebar navigation={navigation} />
+      <DesktopSidebar pathname={pathname} navigation={navigation} />
 
       <div className="lg:pl-72">
         <Header setSidebarOpen={setSidebarOpen} />
