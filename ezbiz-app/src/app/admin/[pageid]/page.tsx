@@ -28,6 +28,7 @@ import { demoPageDetails } from "@/lib/mockdata";
 import { getContentById, updateContent } from "@/services/content";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Sketch } from "@uiw/react-color";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { toast } from "sonner";
@@ -58,8 +59,6 @@ export default function Page({ params }: { params: { pageid: string } }) {
 
   const defaultSaveDir = `pages/${params.pageid}`;
 
-  console.log(content.data);
-  console.log(params);
   const form = useForm<ContentValues>({
     resolver: zodResolver(contentSchema),
     defaultValues: content.data || demoPageDetails,
@@ -88,16 +87,14 @@ export default function Page({ params }: { params: { pageid: string } }) {
 
   async function onSubmit(values: ContentValues) {
     console.log(values);
-    await updateContentMutate.mutateAsync(values);
-    console.log("updated");
-    // toast.promise(updateContentMutate.mutateAsync(values), {
-    //   loading: "Updating content...",
-    //   success: "Content updated successfully",
-    //   error(error) {
-    //     console.log(error);
-    //     return error.message;
-    //   },
-    // });
+    toast.promise(updateContentMutate.mutateAsync(values), {
+      loading: "Updating content...",
+      success: "Content updated successfully",
+      error(error) {
+        console.log(error);
+        return error.message;
+      },
+    });
   }
 
   if (content.isLoading) {

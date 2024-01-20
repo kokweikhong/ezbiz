@@ -2,7 +2,7 @@ import { url } from "inspector";
 import { z } from "zod";
 
 export const socialMediaSchema = z.object({
-  id: z.number().int().positive().optional(),
+  id: z.number().int().optional(),
   name: z.string().optional(),
   url: z.string().optional(),
   imagePath: z.string().optional(),
