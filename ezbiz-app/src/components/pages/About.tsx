@@ -12,7 +12,7 @@ type PageContentProps = {
   content: any;
 };
 
-const PageAbout: React.FC<PageContentProps> = ({ content, themeColor }) => {
+const About: React.FC<PageContentProps> = ({ content, themeColor }) => {
   const editor = useEditor({
     editable: false,
     extensions: [StarterKit, Document, Paragraph, Text],
@@ -35,4 +35,4 @@ const PageAbout: React.FC<PageContentProps> = ({ content, themeColor }) => {
   );
 };
 
-export default PageAbout;
+export default About;

@@ -22,7 +22,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const userSignInSchema = z.object({
   email: z.string().min(2, {
@@ -32,6 +33,10 @@ const userSignInSchema = z.object({
 });
 
 export default function Page() {
+  const { status } = useSession();
+  if (status === "authenticated") {
+    redirect("/admin");
+  }
   const params = useSearchParams();
   const form = useForm<z.infer<typeof userSignInSchema>>({
     resolver: zodResolver(userSignInSchema),

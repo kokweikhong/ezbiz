@@ -10,7 +10,7 @@ import { FC, InputHTMLAttributes, useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 import { toast } from "sonner";
 
-type PageContentFileUploadProps = {
+type ContentFileUploadProps = {
   id: string;
   field: ControllerRenderProps<ContentValues, any>;
   accept?: InputHTMLAttributes<HTMLInputElement>["accept"];
@@ -19,7 +19,7 @@ type PageContentFileUploadProps = {
   newFilename?: string;
 };
 
-const PageContentFileUpload: FC<PageContentFileUploadProps> = ({
+const ContentFileUpload: FC<ContentFileUploadProps> = ({
   id,
   field,
   accept,
@@ -119,4 +119,4 @@ const PageContentFileUpload: FC<PageContentFileUploadProps> = ({
   );
 };
 
-export default PageContentFileUpload;
+export default ContentFileUpload;

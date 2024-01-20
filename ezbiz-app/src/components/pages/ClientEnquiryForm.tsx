@@ -13,27 +13,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const PageClientEnquiryFormSchema = z.object({
+const ClientEnquiryFormSchema = z.object({
   name: z.string(),
   email: z.string(),
 });
 
-type PageClientEnquiryFormProps = {
+type ClientEnquiryFormProps = {
   themeColor?: string;
 };
 
-const PageClientEnquiryForm: React.FC<PageClientEnquiryFormProps> = ({
+const ClientEnquiryForm: React.FC<ClientEnquiryFormProps> = ({
   themeColor,
 }) => {
-  const form = useForm<z.infer<typeof PageClientEnquiryFormSchema>>({
-    resolver: zodResolver(PageClientEnquiryFormSchema),
+  const form = useForm<z.infer<typeof ClientEnquiryFormSchema>>({
+    resolver: zodResolver(ClientEnquiryFormSchema),
     defaultValues: {
       name: "",
       email: "",
     },
   });
 
-  function onSubmit(data: z.infer<typeof PageClientEnquiryFormSchema>) {
+  function onSubmit(data: z.infer<typeof ClientEnquiryFormSchema>) {
     console.log(data);
   }
 
@@ -96,4 +96,4 @@ const PageClientEnquiryForm: React.FC<PageClientEnquiryFormProps> = ({
   );
 };
 
-export default PageClientEnquiryForm;
+export default ClientEnquiryForm;

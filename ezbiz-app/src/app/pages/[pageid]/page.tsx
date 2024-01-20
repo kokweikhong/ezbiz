@@ -1,18 +1,19 @@
 "use client";
 
 import shareSvg from "@/../public/svg/share.svg";
-import PageAbout from "@/components/PageAbout";
-import PageFooter from "@/components/PageFooter";
-import PageGallery from "@/components/PageGallery";
-import PageQrcodeDialog from "@/components/PageQrcodeDialog";
-import PageSaveContact from "@/components/PageSaveContact";
-import QrcodeVCard from "@/components/QrcodeVCard";
+import About from "@/components/pages/About";
+import Footer from "@/components/pages/Footer";
+import Gallery from "@/components/pages/Gallery";
+import QrcodeDialog from "@/components/pages/QrcodeDialog";
+import SaveContact from "@/components/pages/SaveContact";
+import QrcodeVCard from "@/components/pages/QrcodeVCard";
 import { imageLoader, isWithImageExtension } from "@/lib/image";
 import { demoPageDetails as data } from "@/lib/mockdata";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useQuery } from "react-query";
 import { getContentsByUrl } from "@/services/content";
+import ShareContent from "@/components/pages/ShareContent";
 
 export default function Page({ params }: { params: { pageid: string } }) {
   const content = useQuery({
@@ -64,7 +65,7 @@ export default function Page({ params }: { params: { pageid: string } }) {
           )}
         >
           <div className="w-full flex justify-between p-[10px]">
-            <PageQrcodeDialog themeColor={content.data.themeColor}>
+            <QrcodeDialog themeColor={content.data.themeColor}>
               <div className="mx-auto md:mr-auto md:w-full">
                 <QrcodeVCard
                   name={content.data.displayName}
@@ -73,13 +74,8 @@ export default function Page({ params }: { params: { pageid: string } }) {
                   website={content.data.website}
                 />
               </div>
-            </PageQrcodeDialog>
-            <button
-              style={{ backgroundColor: content.data.themeColor }}
-              className="p-[10px] shadow-lg rounded-lg"
-            >
-              <Image src={shareSvg} alt="share" width={29} height={29} />
-            </button>
+            </QrcodeDialog>
+            <ShareContent themeColor={content.data.themeColor} />
           </div>
 
           <div className="rounded-full overflow-hidden border-4 border-white bg-white mt-[20px]">
@@ -102,7 +98,7 @@ export default function Page({ params }: { params: { pageid: string } }) {
           </div>
 
           <div className="mt-[20px] font-semibold">
-            <PageSaveContact
+            <SaveContact
               name={content.data.displayName}
               email={content.data.emailAddress}
               phone={content.data.contactNo ?? ""}
@@ -114,21 +110,21 @@ export default function Page({ params }: { params: { pageid: string } }) {
       </section>
 
       <section className={cn(sectionClass, "mt-[30px]")}>
-        <PageAbout
+        <About
           content={content.data.content}
           themeColor={content.data.themeColor}
         />
       </section>
 
       <section className={cn(sectionClass, "mt-[30px]")}>
-        <PageGallery
+        <Gallery
           themeColor={content.data.themeColor}
           images={content.data.gallery?.filter((image) => image !== "") ?? []}
         />
       </section>
 
       <section className="mt-[30px] bg-[#3a3a3a]">
-        <PageFooter themeColor={content.data.themeColor} />
+        <Footer themeColor={content.data.themeColor} />
       </section>
     </main>
   );

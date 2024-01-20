@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
+import { imageLoader } from "@/lib/image";
 
 // Import Swiper styles
 import "swiper/css";
@@ -15,12 +16,12 @@ import "swiper/css/thumbs";
 import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { Swiper as TSwiper } from "swiper/types";
 
-type PageGalleryProps = {
+type GalleryProps = {
   images: string[];
   themeColor?: string;
 };
 
-const PageGallery: React.FC<PageGalleryProps> = ({ images, themeColor }) => {
+const Gallery: React.FC<GalleryProps> = ({ images, themeColor }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<TSwiper | null>(null);
 
   return (
@@ -46,9 +47,11 @@ const PageGallery: React.FC<PageGalleryProps> = ({ images, themeColor }) => {
             <SwiperSlide key={`gallery-${index}`}>
               <div className="relative w-full h-[300px]">
                 <Image
-                  src={image}
+                  loader={imageLoader}
+                  src={`${image}`}
                   alt="gallery image"
-                  fill
+                  width={300}
+                  height={300}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -71,9 +74,11 @@ const PageGallery: React.FC<PageGalleryProps> = ({ images, themeColor }) => {
             <SwiperSlide key={`gallery-${index}`}>
               <div className="relative w-full h-[100px] cursor-pointer">
                 <Image
-                  src={image}
+                  loader={imageLoader}
+                  src={`${image}`}
                   alt="gallery image"
-                  fill
+                  width={100}
+                  height={100}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -85,4 +90,4 @@ const PageGallery: React.FC<PageGalleryProps> = ({ images, themeColor }) => {
   );
 };
 
-export default PageGallery;
+export default Gallery;

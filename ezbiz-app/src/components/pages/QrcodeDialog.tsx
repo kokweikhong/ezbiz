@@ -12,12 +12,12 @@ import {
 import Image from "next/image";
 import React from "react";
 
-type PageQrcodeDialogProps = {
+type QrcodeDialogProps = {
   children?: React.ReactNode;
   themeColor?: string;
 };
 
-const PageQrcodeDialog: React.FC<PageQrcodeDialogProps> = ({
+const QrcodeDialog: React.FC<QrcodeDialogProps> = ({
   children,
   themeColor,
 }) => {
@@ -47,4 +47,4 @@ const PageQrcodeDialog: React.FC<PageQrcodeDialogProps> = ({
   );
 };
 
-export default PageQrcodeDialog;
+export default QrcodeDialog;

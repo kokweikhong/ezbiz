@@ -18,62 +18,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderIcon, PlusIcon, ImageOffIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "sonner";
 import Image from "next/image";
 import { imageLoader } from "@/lib/image";
 
-const people = [
-  {
-    name: "Lindsay Walton",
-    role: "Front-end Developer",
-    imageUrl:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Courtney Henry",
-    role: "Designer",
-    imageUrl:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Tom Cook",
-    role: "Director of Product",
-    imageUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Whitney Francis",
-    role: "Copywriter",
-    imageUrl:
-      "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Leonard Krasner",
-    role: "Senior Designer",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Floyd Miles",
-    role: "Principal Designer",
-    imageUrl:
-      "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-];
-
 export default function Page() {
   const { data: session, status } = useSession();
-  if (status === "unauthenticated" || !session) {
-    redirect("/auth/signin");
-  }
 
   const queryClient = useQueryClient();
 
   const contents = useQuery("contents", {
-    queryFn: () => getContentsByUserId(session.user.id),
+    queryFn: () => getContentsByUserId(session ? session.user.id : "0"),
     enabled: !!session,
   });
 
@@ -95,7 +52,11 @@ export default function Page() {
   });
 
   async function onSubmit(data: DefaultContentValues) {
-    console.log(data);
+    if (session?.user.pageLimit === contents.data?.length) {
+      toast.warning("You have reached your page limit.");
+      return;
+    }
+    data.userId = parseInt(session ? session.user.id : "0");
     toast.promise(createDefaultContentMutate(data), {
       loading: "Creating new project...",
       success(data) {
@@ -106,6 +67,10 @@ export default function Page() {
         return error.message;
       },
     });
+  }
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
   }
 
   if (contents.isLoading) {
@@ -200,40 +165,47 @@ export default function Page() {
             className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2"
           >
             {contents.data?.map((content) => (
-              <li key={content.url}>
-                <Link
-                  href={`/admin/${content.id}`}
-                  className="group flex w-full items-center justify-between space-x-3 rounded-full border border-gray-300 p-2 text-left shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  <span className="flex min-w-0 flex-1 items-center space-x-3">
-                    <span className="block flex-shrink-0">
-                      {content.profilePicture ? (
-                        <Image
-                          loader={imageLoader}
-                          src={content.profilePicture}
-                          alt={content.displayName}
-                          className="h-10 w-10 rounded-full"
-                        />
-                      ) : (
-                        <ImageOffIcon className="h-10 w-10 rounded-full text-gray-500" />
-                      )}
+              <li
+                key={content.url}
+                className="group flex w-full items-center justify-between space-x-3 rounded-md border border-gray-300 p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <span className="flex min-w-0 flex-1 items-center space-x-3">
+                  <span className="block flex-shrink-0">
+                    {content.profilePicture ? (
+                      <Image
+                        loader={imageLoader}
+                        src={content.profilePicture}
+                        alt={content.displayName}
+                        className="h-10 w-10 rounded-full"
+                      />
+                    ) : (
+                      <ImageOffIcon className="h-10 w-10 rounded-full text-gray-500" />
+                    )}
+                  </span>
+                  <span className="block min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium text-gray-900">
+                      {content.displayName}
                     </span>
-                    <span className="block min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-gray-900">
-                        {content.displayName}
-                      </span>
-                      <span className="block truncate text-sm font-medium text-gray-500">
-                        {content.url}
-                      </span>
+                    <span className="block truncate text-sm font-medium text-gray-500">
+                      {content.url}
                     </span>
                   </span>
-                  <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center">
-                    <PlusIcon
-                      className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </Link>
+                </span>
+
+                <div className="flex flex-none items-center gap-x-2">
+                  <Link
+                    href={`/pages/${content.url}`}
+                    className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
+                  >
+                    View<span className="sr-only">, {content.url}</span>
+                  </Link>
+                  <Link
+                    href={`/admin/${content.id}`}
+                    className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
+                  >
+                    Edit<span className="sr-only">, {content.id}</span>
+                  </Link>
+                </div>
               </li>
             ))}
           </ul>

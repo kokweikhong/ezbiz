@@ -1,10 +1,10 @@
-import PageClientEnquiryForm from "./PageClientEnquiryForm";
+import ClientEnquiryForm from "./ClientEnquiryForm";
 
-type PageFooterProps = {
+type FooterProps = {
   themeColor?: string;
 };
 
-const PageFooter: React.FC<PageFooterProps> = ({ themeColor }) => {
+const Footer: React.FC<FooterProps> = ({ themeColor }) => {
   return (
     <footer className="text-white">
       <div className="text-center max-w-[500px] mx-auto py-[30px]">
@@ -15,7 +15,7 @@ const PageFooter: React.FC<PageFooterProps> = ({ themeColor }) => {
       </div>
 
       <div className="max-w-[500px] py-[20px] mx-auto">
-        <PageClientEnquiryForm themeColor={themeColor} />
+        <ClientEnquiryForm themeColor={themeColor} />
       </div>
 
       <div className="bg-[#1d1d1d] text-center">
@@ -29,4 +29,4 @@ const PageFooter: React.FC<PageFooterProps> = ({ themeColor }) => {
   );
 };
 
-export default PageFooter;
+export default Footer;

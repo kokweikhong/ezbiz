@@ -5,6 +5,11 @@ export function isWithImageExtension(url: string) {
 }
 
 export function imageLoader({ src, width, quality }: ImageLoaderProps) {
+  console.log(
+    `${process.env.NEXT_PUBLIC_EZBIZ_BACKEND_URL}/${src}?w=${width}&q=${
+      quality || 75
+    }`
+  );
   return `${process.env.NEXT_PUBLIC_EZBIZ_BACKEND_URL}/${src}?w=${width}&q=${
     quality || 75
   }`;

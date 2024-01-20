@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import VCard from "vcard-creator";
 
-type PageSaveContactProps = {
+type SaveContactProps = {
   name: string;
   email?: string;
   phone: string;
@@ -12,7 +12,7 @@ type PageSaveContactProps = {
   themeColor?: string;
 };
 
-const PageSaveContact: React.FC<PageSaveContactProps> = ({
+const SaveContact: React.FC<SaveContactProps> = ({
   name,
   email = "",
   phone,
@@ -49,4 +49,4 @@ const PageSaveContact: React.FC<PageSaveContactProps> = ({
   );
 };
 
-export default PageSaveContact;
+export default SaveContact;
