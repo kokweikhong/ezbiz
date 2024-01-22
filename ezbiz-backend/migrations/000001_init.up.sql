@@ -45,3 +45,28 @@ CREATE TABLE IF NOT EXISTS "contents" (
 );
 
 ALTER TABLE "contents" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- generate socials with url empty and image_path empty
+INSERT INTO "socials" ("id", "name", "url", "image_path", "placeholder") VALUES
+(1, 'facebook', '', '', 'https://www.facebook.com/'),
+(2, 'twitter', '', '', 'https://twitter.com/'),
+(3, 'instagram', '', '', 'https://www.instagram.com/'),
+(4, 'linkedin', '', '', 'https://www.linkedin.com/'),
+(5, 'youtube', '', '', 'https://www.youtube.com/'),
+(6, 'tiktok', '', '', 'https://www.tiktok.com/'),
+(7, 'pinterest', '', '', 'https://www.pinterest.com/'),
+(8, 'snapchat', '', '', 'https://www.snapchat.com/'),
+(9, 'tumblr', '', '', 'https://www.tumblr.com/'),
+(10, 'reddit', '', '', 'https://www.reddit.com/'),
+(11, 'whatsapp', '', '', 'https://www.whatsapp.com/'),
+(12, 'telegram', '', '', 'https://telegram.org/'),
+(13, 'line', '', '', 'https://line.me/'),
+(14, 'wechat', '', '', 'https://www.wechat.com/'),
+(15, 'viber', '', '', 'https://www.viber.com/'),
+(16, 'skype', '', '', 'https://www.skype.com/'),
+{17, 'waze', '', '', 'https://www.waze.com/'
+ON CONFLICT DO NOTHING;
+
+-- set next id for socials
+SELECT setval('socials_id_seq', (SELECT MAX(id) FROM socials));
+

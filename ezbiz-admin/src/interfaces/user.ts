@@ -1,7 +1,8 @@
+import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 export const UserSchema = z.object({
-  id: z.number().optional(),
+  id: z.number(),
   firstName: z.string(),
   lastName: z.string(),
   email: z.string().email(),
@@ -9,8 +10,12 @@ export const UserSchema = z.object({
   role: z.string(),
   isActive: z.boolean().default(true),
   pageLimit: z.number().int().positive(),
-  created_at: z.string().optional(),
-  updated_at: z.string().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 export type UserValues = z.infer<typeof UserSchema>;
+
+export type UserFormInputProps = {
+  form: UseFormReturn<UserValues>;
+};

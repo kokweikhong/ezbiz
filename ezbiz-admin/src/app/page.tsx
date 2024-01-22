@@ -1,9 +1,10 @@
 import {
-  CursorArrowRaysIcon,
-  EnvelopeOpenIcon,
+  ArrowDown01Icon,
+  ArrowDownIcon,
+  ArrowUpIcon,
+  FolderOpenIcon,
   UsersIcon,
-} from "@heroicons/react/24/outline";
-import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
+} from "lucide-react";
 
 const stats = [
   {
@@ -18,7 +19,7 @@ const stats = [
     id: 2,
     name: "Avg. Open Rate",
     stat: "58.16%",
-    icon: EnvelopeOpenIcon,
+    icon: FolderOpenIcon,
     change: "5.4%",
     changeType: "increase",
   },
@@ -26,7 +27,7 @@ const stats = [
     id: 3,
     name: "Avg. Click Rate",
     stat: "24.57%",
-    icon: CursorArrowRaysIcon,
+    icon: ArrowDown01Icon,
     change: "3.2%",
     changeType: "decrease",
   },

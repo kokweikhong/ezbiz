@@ -1,9 +1,9 @@
 import Layout from "@/components/Layout";
+import QueryProvider from "@/components/QueryProvider";
+import { Toaster } from "@/components/ui/sonner";
+import { poppins } from "@/lib/fonts";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Ezbiz Admin",
@@ -17,9 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`h-full bg-white ${inter.className}`}>
-        <Layout>{children}</Layout>
-      </body>
+      <QueryProvider>
+        <body className={`h-full bg-white ${poppins.className} font-poppins`}>
+          <Layout>{children}</Layout>
+          <Toaster richColors position="top-center" className="z-[10005]" />
+        </body>
+      </QueryProvider>
     </html>
   );
 }
