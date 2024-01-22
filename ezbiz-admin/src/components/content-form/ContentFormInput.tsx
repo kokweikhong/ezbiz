@@ -1,7 +1,6 @@
 import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
-import { ImageOffIcon } from "lucide-react";
 
-export const ContentFormInput = ({
+const ContentFormInput = ({
   children,
   labelText,
 }: {
@@ -20,11 +19,4 @@ export const ContentFormInput = ({
   );
 };
 
-export const ContentFormImageInput = () => {
-  return (
-    <div>
-      <ImageOffIcon />
-      <input type="file" className="hidden" />
-    </div>
-  );
-};
+export default ContentFormInput;

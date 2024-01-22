@@ -1,14 +1,12 @@
 "use client";
 
-import {
-  ContentFormImageInput,
-  ContentFormInput,
-} from "@/components/content-form/ContentFormInput";
+import ContentFormInput from "@/components/content-form/ContentFormInput";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ContentSchema, ContentValues } from "@/interfaces/content";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import ContentFormImageInput from "./ContentFormImageInput";
 
 const ContentForm = () => {
   const form = useForm<ContentValues>({
@@ -54,12 +52,10 @@ const ContentForm = () => {
               name="backgroundImage"
               defaultValue=""
               render={({ field }) => (
-                <div>
-                  <ContentFormImageInput />
-                  <ContentFormInput labelText="Background Image">
-                    <Input type="text" {...field} />
-                  </ContentFormInput>
-                </div>
+                <ContentFormImageInput
+                  field={field}
+                  labelText="Background Image"
+                />
               )}
             />
           </div>
