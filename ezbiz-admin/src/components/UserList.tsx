@@ -4,16 +4,22 @@ import { mockUsers } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { deleteUser } from "@/services/users";
 import { Menu, Transition } from "@headlessui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckCircleIcon, MoreVerticalIcon, XCircleIcon } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
 import { toast } from "sonner";
+import { getUsers } from "@/services/users";
 
 const UserList = () => {
-  const users = mockUsers;
-
   const queryClient = useQueryClient();
+
+  // const users = mockUsers;
+  const { data: users, isLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => getUsers(),
+  });
+
 
   const deleteUserMutation = useMutation({
     mutationFn: (id: number) => deleteUser(id),
@@ -43,9 +49,13 @@ const UserList = () => {
     });
   }
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <ul role="list" className="divide-y divide-gray-100">
-      {users.map((user) => (
+      {users?.map((user) => (
         <li key={user.email} className="flex justify-between gap-x-6 py-5">
           <div className="flex gap-x-4 items-center">
             <div className="flex flex-col items-center justify-center space-y-2">
@@ -86,7 +96,7 @@ const UserList = () => {
           </div>
           <div className="flex items-center gap-x-6">
             <div className="hidden sm:flex sm:flex-col sm:items-end">
-              <p className="text-sm leading-6 text-gray-900">{user.role}</p>
+              <p className="text-sm leading-6 text-gray-900 capitalize">{user.role}</p>
               {user.createdAt && (
                 <p className="mt-1 text-xs leading-5 text-gray-500">
                   Created at{" "}

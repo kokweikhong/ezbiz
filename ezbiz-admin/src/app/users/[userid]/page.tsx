@@ -5,6 +5,7 @@ import { UserSchema, UserValues } from "@/interfaces/user";
 import { getUser, updateUser } from "@/services/users";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -25,18 +26,24 @@ export default function Page({ params }: { params: { userid: string } }) {
     },
   });
 
+
   const form = useForm<UserValues>({
     resolver: zodResolver(UserSchema),
-    defaultValues: {
-      id: 1,
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      role: "user",
-      isActive: true,
-    },
+    defaultValues: user.data,
   });
+
+  useEffect(() => {
+    if (user.data) {
+      form.reset(user.data);
+    }
+  }, [user.data]);
+
+  if (user.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+
+  console.log(user.data);
 
   function onSubmit(values: UserValues) {
     console.log(values);

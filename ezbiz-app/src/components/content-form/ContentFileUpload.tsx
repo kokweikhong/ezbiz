@@ -92,7 +92,7 @@ const ContentFileUpload: FC<ContentFileUploadProps> = ({
           id={id}
           type="file"
           accept={accept || "image/*"}
-          // defaultValue={field.value || ""}
+          defaultValue={field.value || ""}
           className="hidden"
           // value={field.value || ""}
           onChange={(e) => {

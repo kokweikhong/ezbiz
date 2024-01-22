@@ -1,7 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   ContentValues,
   contentSchema,
@@ -28,9 +36,20 @@ import InputSocialMedia from "@/components/content-form/InputSocialMedia";
 import InputLocation from "@/components/content-form/InputLocation";
 import InputGallery from "@/components/content-form/InputGallery";
 import InputShortDescription from "@/components/content-form/InputShortDescription";
+import { getSocials } from "@/services/socials";
+import ContentInput from "@/components/content-form/ContentInput";
+import { Input } from "@/components/ui/input";
+import ContentImageInput from "@/components/content-form/ContentImageInput";
 
 export default function Page({ params }: { params: { pageid: string } }) {
   const queryClient = useQueryClient();
+  const socials = useQuery({
+    queryKey: ["socials"],
+    queryFn: () => getSocials(),
+  });
+
+  console.log(socials.data);
+
   const content = useQuery(
     ["content", params.pageid],
     () => getContentById(params.pageid),
@@ -106,30 +125,104 @@ export default function Page({ params }: { params: { pageid: string } }) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="space-y-12 sm:space-y-16">
           <div className="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
-            <InputUrl form={form} isImage={false} />
-            <InputBackgroundImage
-              isImage={true}
-              form={form}
-              themeColor={themeColor as string}
-              saveDir={defaultSaveDir}
+            <FormField
+              control={form.control}
+              name="url"
+              defaultValue={""}
+              render={({ field }) => (
+                <ContentInput field={field} label="Url">
+                  <FormControl>
+                    <Input
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
+                      {...field}
+                    />
+                  </FormControl>
+                </ContentInput>
+              )}
             />
-            <InputThemeColor
-              isImage={false}
-              form={form}
-              themeColor={themeColor as string}
+
+            <FormField
+              control={form.control}
+              name="backgroundImage"
+              defaultValue={""}
+              render={({ field }) => (
+                <ContentInput field={field} label="Background Image">
+                  <ContentImageInput field={field} label="Background Image" />
+                </ContentInput>
+              )}
             />
-            <InputProfilePicture
-              isImage={true}
-              form={form}
-              themeColor={themeColor as string}
-              saveDir={defaultSaveDir}
+
+            <FormField
+              control={form.control}
+              name="themeColor"
+              defaultValue={""}
+              render={({ field }) => (
+                <ContentInput field={field} label="Theme Color">
+                  <InputThemeColor
+                    field={field}
+                    themeColor={themeColor as string}
+                  />
+                </ContentInput>
+              )}
             />
-            <InputCompanyLogo
-              isImage={true}
-              form={form}
-              themeColor={themeColor as string}
-              saveDir={defaultSaveDir}
+
+            <FormField
+              control={form.control}
+              name="profilePicture"
+              defaultValue={""}
+              render={({ field }) => (
+                <ContentInput field={field} label="Profile Picture">
+                  <ContentImageInput field={field} label="Background Image" />
+                </ContentInput>
+              )}
             />
+
+            <FormField
+              control={form.control}
+              name="companyLogo"
+              defaultValue={""}
+              render={({ field }) => (
+                <ContentInput field={field} label="Company Logo">
+                  <ContentImageInput field={field} label="Company Logo" />
+                </ContentInput>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="displayName"
+              defaultValue={""}
+              render={({ field }) => (
+                <ContentInput field={field} label="Display Name">
+                  <FormControl>
+                    <Input
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
+                      {...field}
+                    />
+                  </FormControl>
+                </ContentInput>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="businessTagline"
+              defaultValue={""}
+              render={({ field }) => (
+                <ContentInput
+                  field={field}
+                  label="Job Position / Business Tagline"
+                >
+                  <FormControl>
+                    <Input
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
+                      {...field}
+                    />
+                  </FormControl>
+                </ContentInput>
+              )}
+            />
+
             <InputDisplayName isImage={false} form={form} />
             <InputBusinessTagline isImage={false} form={form} />
             <InputContactNo isImage={false} form={form} />

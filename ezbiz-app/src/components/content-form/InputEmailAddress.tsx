@@ -15,7 +15,7 @@ const InputEmailAdress: React.FC<ContentFormProps> = ({ form }) => {
     <FormField
       control={form.control}
       name="emailAddress"
-      defaultValue=""
+      defaultValue="example@example.com"
       render={({ field }) => (
         <FormItem className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
           <FormLabel

@@ -64,7 +64,7 @@ INSERT INTO "socials" ("id", "name", "url", "image_path", "placeholder") VALUES
 (14, 'wechat', '', '', 'https://www.wechat.com/'),
 (15, 'viber', '', '', 'https://www.viber.com/'),
 (16, 'skype', '', '', 'https://www.skype.com/'),
-{17, 'waze', '', '', 'https://www.waze.com/'
+(17, 'waze', '', '', 'https://www.waze.com/')
 ON CONFLICT DO NOTHING;
 
 -- set next id for socials

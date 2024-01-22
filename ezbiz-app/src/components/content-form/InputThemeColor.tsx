@@ -14,51 +14,43 @@ import {
   FormControl,
   FormMessage,
 } from "../ui/form";
+import { ControllerRenderProps } from "react-hook-form";
+import { ContentValues } from "@/interfaces/content";
 
-const InputThemeColor: React.FC<ContentFormProps> = ({ form, themeColor }) => {
+type InputThemeColorProps = {
+  field: ControllerRenderProps<ContentValues, any>;
+  themeColor?: string;
+};
+
+const InputThemeColor: React.FC<InputThemeColorProps> = ({
+  field,
+  themeColor,
+}) => {
   return (
-    <FormField
-      control={form.control}
-      name="themeColor"
-      defaultValue="#0000FF"
-      render={({ field }) => (
-        <FormItem className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-          <FormLabel
-            htmlFor="themeColor"
-            className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
-          >
-            Theme Color
-          </FormLabel>
-          <div className="mt-2 sm:col-span-2 sm:mt-0">
-            <div className="flex space-x-2">
-              <Popover>
-                <PopoverTrigger
-                  type="button"
-                  style={{ backgroundColor: themeColor }}
-                  className="inline-block rounded bg-blue-600 px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg"
-                >
-                  Select Color
-                </PopoverTrigger>
-                <PopoverContent>
-                  <Sketch
-                    color={field.value}
-                    onChange={(color) => field.onChange(color.hex)}
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormControl>
-                <Input
-                  id="themeColor"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                  {...field}
-                />
-              </FormControl>
-            </div>
-            <FormMessage />
-          </div>
-        </FormItem>
-      )}
-    />
+    <div className="flex space-x-2">
+      <Popover>
+        <PopoverTrigger
+          type="button"
+          style={{ backgroundColor: themeColor }}
+          className="inline-block rounded bg-blue-600 px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg"
+        >
+          Select Color
+        </PopoverTrigger>
+        <PopoverContent>
+          <Sketch
+            color={field.value}
+            onChange={(color) => field.onChange(color.hex)}
+          />
+        </PopoverContent>
+      </Popover>
+      <FormControl>
+        <Input
+          id="themeColor"
+          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
+          {...field}
+        />
+      </FormControl>
+    </div>
   );
 };
 

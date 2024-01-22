@@ -1,8 +1,10 @@
+"use server"
+
 import { ChangeUserPasswordValues } from "@/interfaces/user";
 import axios from "axios";
 
 const axiosUser = axios.create({
-  baseURL: `${process.env.EZBIZ_BACKEND_URL}/users`,
+  baseURL: `${process.env.EZBIZ_BACKEND_API_URL}/users`,
 });
 
 export async function updateUser(data: FormData) {
