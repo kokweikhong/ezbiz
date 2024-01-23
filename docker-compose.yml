@@ -16,6 +16,21 @@ services:
       mode: replicated
       replicas: 1
 
+  admin:
+    build: 
+      context: ./ezbiz-admin
+    container_name: ezbiz-admin 
+    restart: always
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+    networks:
+      - ezbiz-network
+    deploy:
+      mode: replicated
+      replicas: 1
+
   backend:
     build:
       context: ./ezbiz-backend
