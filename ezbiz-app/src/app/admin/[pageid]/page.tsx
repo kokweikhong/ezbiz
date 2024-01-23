@@ -69,12 +69,13 @@ export default function Page({ params }: { params: { pageid: string } }) {
 
   // merge socialMedias default to form and keep the form url.
   function mergeSocialMedias(data: ContentValues) {
+    if (!socials.data) return;
     // const socialMedias = form.getValues("socialMedias");
     if (!data.socialMedias) {
-      form.setValue("socialMedias", defaultSocialMedias);
+      form.setValue("socialMedias", socials.data);
       return;
     }
-    const socialMediasWithDefault = defaultSocialMedias.map((item) => {
+    const socialMediasWithDefault = socials.data.map((item) => {
       const socialMedia = data.socialMedias.find(
         (socialMedia) => socialMedia.name === item.name
       );

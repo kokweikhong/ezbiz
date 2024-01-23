@@ -1,18 +1,13 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import { PlusIcon } from "lucide-react";
+"use client";
+
+import { PlusIcon, ImageOffIcon } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getSocials, deleteSocial } from "@/services/socials";
+import Image from "next/image";
+import { imageLoader, isWithImageExtension } from "@/lib/image";
+import Link from "next/link";
+import { EditIcon, TrashIcon } from "lucide-react";
+import { toast } from "sonner";
 
 const people = [
   {
@@ -36,6 +31,48 @@ const people = [
 ];
 
 export default function Page() {
+
+  const socials = useQuery({
+    queryKey: ["socials"],
+    queryFn: () => getSocials(),
+  });
+
+  const queryClient = useQueryClient();
+
+  const deleteSocialMutation = useMutation({
+    mutationFn: (id: number) => deleteSocial(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["socials"] });
+    },
+  });
+
+  function handleDeleteSocial(id: number) {
+    toast("Are you confirm to delete this social?", {
+      action: {
+        label: "Delete",
+        onClick: () =>
+          toast.promise(deleteSocialMutation.mutateAsync(id), {
+            loading: "Deleting social...",
+            success: "Social deleted successfully",
+            error: "Error while deleting social",
+          }),
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => toast.dismiss(),
+      },
+    });
+  }
+
+
+  if (socials.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (socials.isError) {
+    throw socials.error;
+  }
+
   return (
     <div className="mx-auto max-w-lg">
       <div>
@@ -55,72 +92,76 @@ export default function Page() {
             />
           </svg>
           <h2 className="mt-2 text-base font-semibold leading-6 text-gray-900">
-            Add team members
+            Socials list
           </h2>
           <p className="mt-1 text-sm text-gray-500">
-            You haven’t added any team members to your project yet. As the owner
-            of this project, you can manage team member permissions.
+            Socials are used to connect with your friends and family.
           </p>
         </div>
-        <form action="#" className="mt-6 flex">
-          <label htmlFor="email" className="sr-only">
-            Email address
-          </label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            placeholder="Enter an email"
-          />
-          <button
-            type="submit"
-            className="ml-4 flex-shrink-0 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Send invite
-          </button>
-        </form>
+        <Link href={"/socials/create"} className="mt-6 block w-full px-4 py-2 text-sm font-medium text-center text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">
+          Create a new social
+        </Link>
       </div>
       <div className="mt-10">
         <h3 className="text-sm font-medium text-gray-500">
-          Team members previously added to projects
+          Socials you added
         </h3>
         <ul
           role="list"
           className="mt-4 divide-y divide-gray-200 border-b border-t border-gray-200"
         >
-          {people.map((person, personIdx) => (
+          {socials?.data?.map((social, socialIdx) => (
             <li
-              key={personIdx}
+              key={socialIdx}
               className="flex items-center justify-between space-x-3 py-4"
             >
               <div className="flex min-w-0 flex-1 items-center space-x-3">
                 <div className="flex-shrink-0">
-                  <img
-                    className="h-10 w-10 rounded-full"
-                    src={person.imageUrl}
-                    alt=""
-                  />
+                  {social.imagePath && isWithImageExtension(social.imagePath) ? (
+                    <Image
+                      loader={imageLoader}
+                      src={social.imagePath}
+                      alt={social.name}
+                      width={40}
+                      height={40}
+                      className="h-10 w-10 rounded-full"
+                    />
+                  ) : (
+                    <ImageOffIcon className="h-10 w-10 rounded-full text-gray-500" />
+                  )}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-gray-900">
-                    {person.name}
+                    {social.name}
                   </p>
                   <p className="truncate text-sm font-medium text-gray-500">
-                    {person.role}
+                    {social.placeholder}
                   </p>
                 </div>
               </div>
-              <div className="flex-shrink-0">
-                <button
-                  type="button"
+              <div className="flex-shrink-0 grid grid-cols-2 space-x-2">
+                <Link
+                  href={`/socials/update/${social.id}`}
                   className="inline-flex items-center gap-x-1.5 text-sm font-semibold leading-6 text-gray-900"
                 >
-                  <PlusIcon
+                  <EditIcon
                     className="h-5 w-5 text-gray-400"
                     aria-hidden="true"
                   />
-                  Invite <span className="sr-only">{person.name}</span>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!social.id) return;
+                    handleDeleteSocial(social.id)
+                  }}
+                  className="inline-flex items-center gap-x-1.5 text-sm font-semibold leading-6 text-gray-900"
+                >
+                  <TrashIcon
+                    className="h-5 w-5 text-red-400"
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
             </li>

@@ -7,6 +7,7 @@ import QrcodeDialog from "@/components/pages/QrcodeDialog";
 import QrcodeVCard from "@/components/pages/QrcodeVCard";
 import SaveContact from "@/components/pages/SaveContact";
 import ShareContent from "@/components/pages/ShareContent";
+import SocialMedias from "@/components/pages/SocialMedias";
 import { imageLoader, isWithImageExtension } from "@/lib/image";
 import { cn } from "@/lib/utils";
 import { getContentsByUrl } from "@/services/content";
@@ -93,6 +94,10 @@ export default function Page({ params }: { params: { pageid: string } }) {
           <div className="text-center mt-[20px] font-semibold">
             <h2 className="text-[26px] mb-[5px]">{content.data.displayName}</h2>
             <h2 className="text-[21px]">{content.data.businessTagline}</h2>
+          </div>
+
+          <div>
+            <SocialMedias data={content.data.socialMedias} />
           </div>
 
           <div className="mt-[20px] font-semibold">
