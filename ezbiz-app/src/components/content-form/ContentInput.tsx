@@ -1,19 +1,12 @@
-import React from "react";
 import {
-  FormControl,
   FormDescription,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  ControllerRenderProps,
-  UseControllerProps,
-  UseFormReturn,
-} from "react-hook-form";
 import { ContentValues } from "@/interfaces/content";
+import React from "react";
+import { ControllerRenderProps } from "react-hook-form";
 
 type ContentTextInputProps = {
   children: React.ReactNode;
@@ -33,7 +26,7 @@ const ContentInput: React.FC<ContentTextInputProps> = ({
         {label}
       </FormLabel>
       <div className="mt-2 sm:col-span-2 sm:mt-0">
-        <FormControl>{children}</FormControl>
+        {children}
         {description && <FormDescription>{description}</FormDescription>}
         <FormMessage />
       </div>

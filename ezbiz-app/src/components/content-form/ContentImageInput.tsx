@@ -1,30 +1,32 @@
-import { ImageOffIcon, UploadCloudIcon } from "lucide-react";
-import { FormControl, FormLabel } from "@/components/ui/form";
+import { FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ContentValues } from "@/interfaces/content";
-import { ControllerRenderProps } from "react-hook-form";
-import { FC } from "react";
-import { toast } from "sonner";
-import { uploadFile } from "@/services/file";
 import { imageLoader } from "@/lib/image";
+import { uploadFile } from "@/services/file";
+import { ImageOffIcon, UploadCloudIcon } from "lucide-react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { FC } from "react";
+import { ControllerRenderProps } from "react-hook-form";
+import { toast } from "sonner";
 
 type ContentImageInputProps = {
   field: ControllerRenderProps<ContentValues, any>;
-  label: string;
-  description?: string;
+  saveDir: string;
+  newFilename: string;
 };
 
-const ContentImageInput: FC<ContentImageInputProps> = ({ field }) => {
-  console.log(field.value);
+const ContentImageInput: FC<ContentImageInputProps> = ({
+  field,
+  saveDir,
+  newFilename,
+}) => {
   function handleFileOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.item(0);
     if (!file) return;
     const data = new FormData();
     data.append("file", file);
-    data.append("saveDir", "content");
-    data.append("newFilename", "");
+    data.append("saveDir", saveDir);
+    data.append("newFilename", newFilename);
     toast.promise(uploadFile(data), {
       loading: "Uploading file...",
       success(data) {
@@ -58,16 +60,17 @@ const ContentImageInput: FC<ContentImageInputProps> = ({ field }) => {
           />
         )}
         <div className="mt-4 flex justify-center text-sm leading-6 text-gray-600">
-          <FormLabel className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
+          <label className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
             <span className="flex items-center justify-center w-full text-center">
               <UploadCloudIcon className="h-6 w-6" />
               <span className="ml-2 text-sm leading-normal">Upload a file</span>
             </span>
-            <FormControl>
+            <FormControl className="sr-only">
               <Input
                 type="file"
-                className="sr-only"
+                // className="sr-only"
                 defaultValue={""}
+                accept="image/*"
                 // value={field.value || ""}
                 onChange={(e) => {
                   toast("Are you confirm to upload file to server?", {
@@ -85,7 +88,7 @@ const ContentImageInput: FC<ContentImageInputProps> = ({ field }) => {
                 }}
               />
             </FormControl>
-          </FormLabel>
+          </label>
         </div>
         <p className="text-xs leading-5 text-gray-600">Up to 10MB</p>
       </div>

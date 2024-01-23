@@ -1,21 +1,14 @@
-import React from "react";
-import type { ContentFormProps } from "@/interfaces/content-form";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Sketch } from "@uiw/react-color";
-import { Input } from "@/components/ui/input";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "../ui/form";
-import { ControllerRenderProps } from "react-hook-form";
 import { ContentValues } from "@/interfaces/content";
+import { Sketch } from "@uiw/react-color";
+import React from "react";
+import { ControllerRenderProps } from "react-hook-form";
+import { FormControl } from "../ui/form";
 
 type InputThemeColorProps = {
   field: ControllerRenderProps<ContentValues, any>;
@@ -45,7 +38,6 @@ const InputThemeColor: React.FC<InputThemeColorProps> = ({
       </Popover>
       <FormControl>
         <Input
-          id="themeColor"
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
           {...field}
         />

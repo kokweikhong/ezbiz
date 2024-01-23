@@ -1,19 +1,17 @@
 "use client";
 
-import shareSvg from "@/../public/svg/share.svg";
 import About from "@/components/pages/About";
 import Footer from "@/components/pages/Footer";
 import Gallery from "@/components/pages/Gallery";
 import QrcodeDialog from "@/components/pages/QrcodeDialog";
-import SaveContact from "@/components/pages/SaveContact";
 import QrcodeVCard from "@/components/pages/QrcodeVCard";
+import SaveContact from "@/components/pages/SaveContact";
+import ShareContent from "@/components/pages/ShareContent";
 import { imageLoader, isWithImageExtension } from "@/lib/image";
-import { demoPageDetails as data } from "@/lib/mockdata";
 import { cn } from "@/lib/utils";
+import { getContentsByUrl } from "@/services/content";
 import Image from "next/image";
 import { useQuery } from "react-query";
-import { getContentsByUrl } from "@/services/content";
-import ShareContent from "@/components/pages/ShareContent";
 
 export default function Page({ params }: { params: { pageid: string } }) {
   const content = useQuery({

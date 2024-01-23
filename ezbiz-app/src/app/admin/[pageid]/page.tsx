@@ -1,45 +1,28 @@
 "use client";
 
+import ContentGallery from "@/components/content-form/ContentGallery";
+import ContentImageInput from "@/components/content-form/ContentImageInput";
+import ContentInput from "@/components/content-form/ContentInput";
+import ContentShortDescription from "@/components/content-form/ContentShortDescription";
+import { default as ContentSocialMedias } from "@/components/content-form/ContentSocialMedias";
+import InputThemeColor from "@/components/content-form/InputThemeColor";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   ContentValues,
   contentSchema,
   defaultSocialMedias,
 } from "@/interfaces/content";
 import { demoPageDetails } from "@/lib/mockdata";
+import { cn } from "@/lib/utils";
 import { getContentById, updateContent } from "@/services/content";
-import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { useQuery, useQueryClient, useMutation } from "react-query";
-import { toast } from "sonner";
-import InputUrl from "@/components/content-form/InputUrl";
-import InputBackgroundImage from "@/components/content-form/InputBackgroundImage";
-import InputThemeColor from "@/components/content-form/InputThemeColor";
-import InputProfilePicture from "@/components/content-form/InputProfilePicture";
-import InputCompanyLogo from "@/components/content-form/InputCompanyLogo";
-import InputDisplayName from "@/components/content-form/InputDisplayName";
-import InputBusinessTagline from "@/components/content-form/InputBusinessTagline";
-import InputContactNo from "@/components/content-form/InputContactNo";
-import InputEmailAdress from "@/components/content-form/InputEmailAddress";
-import InputWebsite from "@/components/content-form/InputWebsite";
-import InputSocialMedia from "@/components/content-form/InputSocialMedia";
-import InputLocation from "@/components/content-form/InputLocation";
-import InputGallery from "@/components/content-form/InputGallery";
-import InputShortDescription from "@/components/content-form/InputShortDescription";
 import { getSocials } from "@/services/socials";
-import ContentInput from "@/components/content-form/ContentInput";
-import { Input } from "@/components/ui/input";
-import ContentImageInput from "@/components/content-form/ContentImageInput";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { toast } from "sonner";
 
 export default function Page({ params }: { params: { pageid: string } }) {
   const queryClient = useQueryClient();
@@ -73,6 +56,9 @@ export default function Page({ params }: { params: { pageid: string } }) {
   });
 
   const defaultSaveDir = `pages/${params.pageid}`;
+
+  const defaultInputClass =
+    "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6";
 
   const form = useForm<ContentValues>({
     resolver: zodResolver(contentSchema),
@@ -112,6 +98,12 @@ export default function Page({ params }: { params: { pageid: string } }) {
     });
   }
 
+  useEffect(() => {
+    mergeSocialMedias(form.getValues());
+  }, []);
+
+  console.log(form.formState.errors);
+
   if (content.isLoading) {
     return <div>Loading...</div>;
   }
@@ -127,15 +119,32 @@ export default function Page({ params }: { params: { pageid: string } }) {
           <div className="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
             <FormField
               control={form.control}
+              name="userId"
+              defaultValue={1}
+              render={({ field }) => (
+                <ContentInput field={field} label="User ID">
+                  <FormControl>
+                    <Input
+                      className={cn(defaultInputClass)}
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(parseInt(e.target.value));
+                      }}
+                      hidden
+                    />
+                  </FormControl>
+                </ContentInput>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="url"
               defaultValue={""}
               render={({ field }) => (
                 <ContentInput field={field} label="Url">
                   <FormControl>
-                    <Input
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                      {...field}
-                    />
+                    <Input className={cn(defaultInputClass)} {...field} />
                   </FormControl>
                 </ContentInput>
               )}
@@ -147,7 +156,11 @@ export default function Page({ params }: { params: { pageid: string } }) {
               defaultValue={""}
               render={({ field }) => (
                 <ContentInput field={field} label="Background Image">
-                  <ContentImageInput field={field} label="Background Image" />
+                  <ContentImageInput
+                    field={field}
+                    saveDir={`${defaultSaveDir}`}
+                    newFilename={"background-image"}
+                  />
                 </ContentInput>
               )}
             />
@@ -172,7 +185,11 @@ export default function Page({ params }: { params: { pageid: string } }) {
               defaultValue={""}
               render={({ field }) => (
                 <ContentInput field={field} label="Profile Picture">
-                  <ContentImageInput field={field} label="Background Image" />
+                  <ContentImageInput
+                    field={field}
+                    saveDir={`${defaultSaveDir}`}
+                    newFilename={"profile-pictur"}
+                  />
                 </ContentInput>
               )}
             />
@@ -183,7 +200,11 @@ export default function Page({ params }: { params: { pageid: string } }) {
               defaultValue={""}
               render={({ field }) => (
                 <ContentInput field={field} label="Company Logo">
-                  <ContentImageInput field={field} label="Company Logo" />
+                  <ContentImageInput
+                    field={field}
+                    saveDir={`${defaultSaveDir}`}
+                    newFilename={"company-logo"}
+                  />
                 </ContentInput>
               )}
             />
@@ -193,12 +214,13 @@ export default function Page({ params }: { params: { pageid: string } }) {
               name="displayName"
               defaultValue={""}
               render={({ field }) => (
-                <ContentInput field={field} label="Display Name">
+                <ContentInput
+                  field={field}
+                  label="Display Name"
+                  description="Your Name or Your Business Name"
+                >
                   <FormControl>
-                    <Input
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
-                      {...field}
-                    />
+                    <Input className={cn(defaultInputClass)} {...field} />
                   </FormControl>
                 </ContentInput>
               )}
@@ -212,10 +234,43 @@ export default function Page({ params }: { params: { pageid: string } }) {
                 <ContentInput
                   field={field}
                   label="Job Position / Business Tagline"
+                  description="Job Position / Business Tagline"
                 >
                   <FormControl>
+                    <Input className={cn(defaultInputClass)} {...field} />
+                  </FormControl>
+                </ContentInput>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="contactNo"
+              defaultValue={""}
+              render={({ field }) => (
+                <ContentInput
+                  field={field}
+                  label="Contact No"
+                  description="601xxxxxxxxx"
+                >
+                  <FormControl>
+                    <Input className={cn(defaultInputClass)} {...field} />
+                  </FormControl>
+                </ContentInput>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="emailAddress"
+              defaultValue={"example@example.com"}
+              render={({ field }) => (
+                <ContentInput field={field} label="Email">
+                  <FormControl>
                     <Input
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:max-w-xs sm:text-sm sm:leading-6"
+                      type="email"
+                      autoComplete="email"
+                      className={cn(defaultInputClass)}
                       {...field}
                     />
                   </FormControl>
@@ -223,20 +278,37 @@ export default function Page({ params }: { params: { pageid: string } }) {
               )}
             />
 
-            <InputDisplayName isImage={false} form={form} />
-            <InputBusinessTagline isImage={false} form={form} />
-            <InputContactNo isImage={false} form={form} />
-            <InputEmailAdress isImage={false} form={form} />
-            <InputWebsite isImage={false} form={form} />
-            <InputSocialMedia isImage={false} form={form} />
-            <InputLocation isImage={false} form={form} />
-            <InputGallery
-              isImage={true}
-              form={form}
-              themeColor={themeColor as string}
-              saveDir={defaultSaveDir}
+            <FormField
+              control={form.control}
+              name="website"
+              defaultValue={""}
+              render={({ field }) => (
+                <ContentInput field={field} label="Website">
+                  <FormControl>
+                    <Input className={cn(defaultInputClass)} {...field} />
+                  </FormControl>
+                </ContentInput>
+              )}
             />
-            <InputShortDescription isImage={false} form={form} />
+
+            <FormField
+              control={form.control}
+              name="location"
+              defaultValue={""}
+              render={({ field }) => (
+                <ContentInput field={field} label="Location">
+                  <FormControl>
+                    <Input className={cn(defaultInputClass)} {...field} />
+                  </FormControl>
+                </ContentInput>
+              )}
+            />
+
+            <ContentSocialMedias form={form} label="Social Medias" />
+
+            <ContentGallery form={form} saveDir={defaultSaveDir} />
+
+            <ContentShortDescription form={form} />
 
             <div className="w-full flex items-center">
               <Button

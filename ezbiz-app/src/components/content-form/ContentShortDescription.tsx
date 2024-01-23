@@ -1,16 +1,23 @@
-import React from "react";
-import type { ContentFormProps } from "@/interfaces/content-form";
+import TiptapEditor from "@/components/content-form/TiptapEditor";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import TiptapEditor from "@/components/content-form/TiptapEditor";
+import { ContentValues } from "@/interfaces/content";
+import React from "react";
+import { UseFormReturn } from "react-hook-form";
 
-const InputShortDescription: React.FC<ContentFormProps> = ({ form }) => {
+type ContentShortDescriptionProps = {
+  form: UseFormReturn<ContentValues>;
+};
+
+const ContentShortDescription: React.FC<ContentShortDescriptionProps> = ({
+  form,
+}) => {
   return (
     <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
       <span className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">
@@ -51,4 +58,4 @@ const InputShortDescription: React.FC<ContentFormProps> = ({ form }) => {
   );
 };
 
-export default InputShortDescription;
+export default ContentShortDescription;
