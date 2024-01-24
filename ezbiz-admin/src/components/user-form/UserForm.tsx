@@ -1,22 +1,28 @@
 import { Form } from "@/components/ui/form";
 import FirstNameInput from "@/components/user-form/FirstNameInput";
-import { UserValues } from "@/interfaces/user";
+import { UserSchema, UserValues } from "@/interfaces/user";
 import { FC } from "react";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import EmailInput from "./EmailInput";
 import IsActiveInput from "./IsActiveInput";
 import LastNameInput from "./LastNameInput";
 import PageLimitInput from "./PageLimitInput";
 import PasswordInput from "./PasswordInput";
 import RoleInput from "./RoleInput";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type UserFormProps = {
-  form: UseFormReturn<UserValues>;
   onSubmit: (values: UserValues) => void;
   buttonText: "create" | "update";
+  data?: UserValues;
 };
 
-const UserForm: FC<UserFormProps> = ({ form, onSubmit, buttonText }) => {
+const UserForm: FC<UserFormProps> = ({ onSubmit, buttonText, data }) => {
+  const form = useForm<UserValues>({
+    resolver: zodResolver(UserSchema),
+    defaultValues: data || {},
+  });
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>

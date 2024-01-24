@@ -10,20 +10,19 @@ export const authOptions: AuthOptions = {
         email: { label: "Email", type: "text", placeholder: "jsmith" },
         password: { label: "Password", type: "password" },
       },
+      // @ts-ignore
       async authorize(credentials) {
         console.log(credentials);
-        if (!credentials?.email || !credentials.password) {
-          return null;
-        }
+        console.log("signing in");
         const user = await signIn({
-          email: credentials.email,
-          password: credentials.password,
+          email: credentials?.email ?? "",
+          password: credentials?.password ?? "",
         });
-
         if (user) {
           return user;
+        } else {
+          return null;
         }
-        return null;
       },
     }),
   ],

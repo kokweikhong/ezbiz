@@ -8,6 +8,7 @@ const axiosUsers = axios.create({
 });
 
 export async function signIn(data: { email: string; password: string }) {
+  console.log("signing in");
   const response = await axiosUsers.post<UserValues>("/login", data);
   return response.data;
 }
