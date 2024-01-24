@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"log/slog"
+	"strings"
 
 	"github.com/kokweikhong/ezbiz-backend/internal/db"
 	"github.com/kokweikhong/ezbiz-backend/internal/model"
@@ -127,6 +128,8 @@ func (s *socialService) CreateSocial(social *model.Social) (int64, error) {
 		return -1, err
 	}
 
+	social.Name = strings.ToLower(social.Name)
+
 	var pk int64
 	err = stmt.QueryRow(
 		social.Name,
@@ -154,6 +157,8 @@ func (s *socialService) UpdateSocial(social *model.Social) error {
 		slog.Error("Error preparing statement", "error", err)
 		return err
 	}
+
+	social.Name = strings.ToLower(social.Name)
 
 	_, err = stmt.Exec(
 		social.Name,
