@@ -37,7 +37,10 @@ const ContentFormImageInput: FC<ContentFormImageInputProps> = ({
         onClick: () => {
           toast.promise(uploadFile(formData), {
             loading: "Uploading file...",
-            success: "File uploaded successfully",
+            success: (data) => {
+              field.onChange(data);
+              return "File uploaded successfully";
+            },
             error: "Error uploading file",
           });
         },
@@ -68,6 +71,8 @@ const ContentFormImageInput: FC<ContentFormImageInputProps> = ({
               loader={imageLoader}
               src={field.value}
               alt={field.value.split("/").pop()!}
+              width={200}
+              height={200}
               className="mx-auto h-12 w-12 text-gray-300"
             />
           )}
@@ -80,7 +85,7 @@ const ContentFormImageInput: FC<ContentFormImageInputProps> = ({
                 <Input
                   type="file"
                   className="sr-only"
-                  value={field.value}
+                  // value={field.value}
                   onChange={handleUploadFile}
                 />
               </FormControl>

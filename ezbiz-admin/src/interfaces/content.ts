@@ -45,7 +45,7 @@ export const ContentSchema = z.object({
 
 export type ContentValues = z.infer<typeof ContentSchema>;
 
-export const defaultContentSchema = z.object({
+export const DefaultContentSchema = z.object({
   userId: z.number(),
   url: z
     .string()
@@ -54,7 +54,7 @@ export const defaultContentSchema = z.object({
     .max(30, "URL must be at most 30 characters long."),
 });
 
-export type DefaultContentValues = z.infer<typeof defaultContentSchema>;
+export type DefaultContentValues = z.infer<typeof DefaultContentSchema>;
 
 export const defaultSocialMedias: SocialMediaValues[] = [
   {

@@ -105,6 +105,7 @@ const ShareContent: React.FC<ShareContentProps> = ({ themeColor }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {shareConfigs.map((shareConfig) => (
             <div
+              key={shareConfig.name}
               className={cn(
                 "border-2 h-[40px] flex items-center hover:brightness-[1.2] hover:saturate-[1.5] cursor-pointer rounded-md",
                 shareConfig.tx,

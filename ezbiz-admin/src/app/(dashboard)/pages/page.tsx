@@ -4,68 +4,45 @@ import { cn } from "@/lib/utils";
 import { Menu, Transition } from "@headlessui/react";
 import { MoreVerticalIcon } from "lucide-react";
 import { Fragment } from "react";
-import { getContents } from "@/services/content";
-import { useQuery } from "@tanstack/react-query";
+import { getContents, deleteContent } from "@/services/content";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import Link from "next/link";
 
 const statuses = {
   Active: "text-green-700 bg-green-50 ring-green-600/20",
   // "In progress": "text-gray-600 bg-gray-50 ring-gray-500/10",
   NonActive: "text-yellow-800 bg-yellow-50 ring-yellow-600/20",
 };
-const projects = [
-  {
-    id: 1,
-    name: "GraphQL API",
-    href: "#",
-    status: "Complete",
-    createdBy: "Leslie Alexander",
-    dueDate: "March 17, 2023",
-    dueDateTime: "2023-03-17T00:00Z",
-  },
-  {
-    id: 2,
-    name: "New benefits plan",
-    href: "#",
-    status: "In progress",
-    createdBy: "Leslie Alexander",
-    dueDate: "May 5, 2023",
-    dueDateTime: "2023-05-05T00:00Z",
-  },
-  {
-    id: 3,
-    name: "Onboarding emails",
-    href: "#",
-    status: "In progress",
-    createdBy: "Courtney Henry",
-    dueDate: "May 25, 2023",
-    dueDateTime: "2023-05-25T00:00Z",
-  },
-  {
-    id: 4,
-    name: "iOS app",
-    href: "#",
-    status: "In progress",
-    createdBy: "Leonard Krasner",
-    dueDate: "June 7, 2023",
-    dueDateTime: "2023-06-07T00:00Z",
-  },
-  {
-    id: 5,
-    name: "Marketing site redesign",
-    href: "#",
-    status: "Archived",
-    createdBy: "Courtney Henry",
-    dueDate: "June 10, 2023",
-    dueDateTime: "2023-06-10T00:00Z",
-  },
-];
 
 export default function Page() {
+  const queryClient = useQueryClient();
 
   const contents = useQuery({
     queryKey: ["contents"],
     queryFn: () => getContents(),
   });
+
+  const contentMutation = useMutation({
+    mutationFn: (id: number) => deleteContent(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["contents"] });
+      toast("Content deleted successfully");
+    },
+  });
+
+  function handleDeleteContent(id: number) {
+    toast("Are you sure you want to delete this content?", {
+      action: {
+        label: "Yes",
+        onClick: () => contentMutation.mutate(id),
+      },
+      cancel: {
+        label: "No",
+        onClick: () => toast.dismiss(),
+      },
+    });
+  }
 
   if (contents.isLoading) {
     return <div>Loading...</div>;
@@ -75,7 +52,6 @@ export default function Page() {
     throw contents.error;
   }
 
-  console.log(contents.data)
 
 
   return (
@@ -112,7 +88,8 @@ export default function Page() {
           </div>
           <div className="flex flex-none items-center gap-x-4">
             <a
-              href={`/pages/${content.url}`}
+              href={`${process.env.NEXT_PUBLIC_EZBIZ_APP_URL}/pages/${content.url}`}
+              target="_blank"
               className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
             >
               View project<span className="sr-only">, {content.url}</span>
@@ -134,41 +111,29 @@ export default function Page() {
                 <Menu.Items className="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
                   <Menu.Item>
                     {({ active }) => (
-                      <a
-                        href="#"
+                      <Link
+                        href={`/pages/${content.id}`}
                         className={cn(
                           active ? "bg-gray-50" : "",
-                          "block px-3 py-1 text-sm leading-6 text-gray-900"
+                          "text-left w-full block px-3 py-1 text-sm leading-6 text-gray-900"
                         )}
                       >
                         Edit<span className="sr-only">, {content.id}</span>
-                      </a>
+                      </Link>
                     )}
                   </Menu.Item>
                   <Menu.Item>
                     {({ active }) => (
-                      <a
-                        href="#"
+                      <button
+                        type="button"
                         className={cn(
                           active ? "bg-gray-50" : "",
-                          "block px-3 py-1 text-sm leading-6 text-gray-900"
+                          "text-left w-full block px-3 py-1 text-sm leading-6 text-gray-900"
                         )}
-                      >
-                        Move<span className="sr-only">, {content.id}</span>
-                      </a>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={cn(
-                          active ? "bg-gray-50" : "",
-                          "block px-3 py-1 text-sm leading-6 text-gray-900"
-                        )}
+                        onClick={() => handleDeleteContent(content.id as number)}
                       >
                         Delete<span className="sr-only">, {content.id}</span>
-                      </a>
+                      </button>
                     )}
                   </Menu.Item>
                 </Menu.Items>

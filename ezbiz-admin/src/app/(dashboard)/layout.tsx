@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import QueryProvider from "@/components/QueryProvider";
+import AuthProvider from "@/components/AuthProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { poppins } from "@/lib/fonts";
 import type { Metadata } from "next";
@@ -17,12 +18,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <QueryProvider>
-        <body className={`h-full bg-white ${poppins.className} font-poppins`}>
-          <Layout>{children}</Layout>
-          <Toaster richColors position="top-center" className="z-[10005]" />
-        </body>
-      </QueryProvider>
+      <AuthProvider>
+        <QueryProvider>
+          <body className={`h-full bg-white ${poppins.className} font-poppins`}>
+            <Layout>{children}</Layout>
+            <Toaster richColors position="top-center" className="z-[10005]" />
+          </body>
+        </QueryProvider>
+      </AuthProvider>
     </html>
   );
 }

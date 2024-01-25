@@ -14,7 +14,7 @@ import {
   contentSchema,
   defaultSocialMedias,
 } from "@/interfaces/content";
-import { demoPageDetails } from "@/lib/mockdata";
+// import { demoPageDetails } from "@/lib/mockdata";
 import { cn } from "@/lib/utils";
 import { getContentById, updateContent } from "@/services/content";
 import { getSocials } from "@/services/socials";
@@ -62,7 +62,9 @@ export default function Page({ params }: { params: { pageid: string } }) {
 
   const form = useForm<ContentValues>({
     resolver: zodResolver(contentSchema),
-    defaultValues: content.data || demoPageDetails,
+    defaultValues: content.data || {
+      socialMedias: defaultSocialMedias,
+    },
   });
 
   const themeColor = form.watch("themeColor");

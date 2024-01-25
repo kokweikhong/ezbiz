@@ -1,22 +1,25 @@
 "use client";
 
-import logo from "@/../public/logo.jpg";
 import { cn } from "@/lib/utils";
 import { Menu, Transition } from "@headlessui/react";
 import { BellIcon, ChevronDownIcon, MenuIcon, SearchIcon } from "lucide-react";
-import Image from "next/image";
 import { FC, Fragment } from "react";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 type HeaderProps = {
   setSidebarOpen: (open: boolean) => void;
 };
 
-const userNavigation = [
-  { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "#" },
-];
-
 const Header: FC<HeaderProps> = ({ setSidebarOpen }) => {
+  const { data: session, status } = useSession();
+
+  if (status === "unauthenticated") {
+    redirect("/auth/signin");
+  }
+
   return (
     <header className="sticky top-0 z-40 lg:mx-auto lg:max-w-7xl lg:px-8">
       <div className="flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none">
@@ -68,17 +71,12 @@ const Header: FC<HeaderProps> = ({ setSidebarOpen }) => {
             <Menu as="div" className="relative">
               <Menu.Button className="-m-1.5 flex items-center p-1.5">
                 <span className="sr-only">Open user menu</span>
-                <Image
-                  className="h-8 w-8 rounded-full bg-gray-50"
-                  src={logo}
-                  alt="Ezbiz Admin"
-                />
                 <span className="hidden lg:flex lg:items-center">
                   <span
-                    className="ml-4 text-sm font-semibold leading-6 text-gray-900"
+                    className="text-sm font-semibold leading-6 text-gray-900"
                     aria-hidden="true"
                   >
-                    Tom Cook
+                    {`${session?.user?.firstName}, ${session?.user?.lastName}`}
                   </span>
                   <ChevronDownIcon
                     className="ml-2 h-5 w-5 text-gray-400"
@@ -96,21 +94,32 @@ const Header: FC<HeaderProps> = ({ setSidebarOpen }) => {
                 leaveTo="transform opacity-0 scale-95"
               >
                 <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                  {userNavigation.map((item) => (
-                    <Menu.Item key={item.name}>
-                      {({ active }) => (
-                        <a
-                          href={item.href}
-                          className={cn(
-                            active ? "bg-gray-50" : "",
-                            "block px-3 py-1 text-sm leading-6 text-gray-900"
-                          )}
-                        >
-                          {item.name}
-                        </a>
-                      )}
-                    </Menu.Item>
-                  ))}
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        className={cn(
+                          active ? "bg-gray-50" : "",
+                          "w-full text-left block px-3 py-1 text-sm leading-6 text-gray-900"
+                        )}
+                        onClick={() => signOut()}
+                      >
+                        Sign out
+                      </button>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <Link
+                        href={`/users/${session?.user?.id}`}
+                        className={cn(
+                          active ? "bg-gray-50" : "",
+                          "block px-3 py-1 text-sm leading-6 text-gray-900"
+                        )}
+                      >
+                        Your profile
+                      </Link>
+                    )}
+                  </Menu.Item>
                 </Menu.Items>
               </Transition>
             </Menu>

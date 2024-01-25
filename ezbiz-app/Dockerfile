@@ -26,8 +26,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # This will do the trick, use the corresponding env file for each environment.
 # COPY .env.production.sample .env.production
-COPY .env.production .env.production
-COPY .env.local .env.local
+# COPY .env.production .env.production
+COPY .env.local .env.production
 # RUN yarn build
 
 # If using npm comment out above and use below instead

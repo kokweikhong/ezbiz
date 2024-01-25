@@ -22,7 +22,7 @@ services:
     container_name: ezbiz-admin 
     restart: always
     ports:
-      - "3001:3000"
+      - "3000:3001"
     depends_on:
       - backend
     networks:

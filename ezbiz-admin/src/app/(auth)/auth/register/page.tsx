@@ -3,10 +3,19 @@
 import UserForm from "@/components/user-form/UserForm";
 import { UserValues } from "@/interfaces/user";
 import { createUser } from "@/services/users";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { getUsers } from "@/services/users";
 
 export default function Page() {
+  const { data: session } = useSession();
+
+  const users = useQuery({
+    queryKey: ["users"],
+    queryFn: () => getUsers(),
+  })
+
   const queryClient = useQueryClient();
 
   const createUserMutation = useMutation({
@@ -15,6 +24,25 @@ export default function Page() {
       queryClient.setQueryData(["users", data.id], data);
     },
   });
+
+  if (users.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (users.isError) {
+    throw users.error;
+  }
+
+  if (users.data && users.data.length > 0 &&
+    session && session.user.role !== "admin") {
+    return (
+      <div className="mt-12">
+        <h1 className="text-2xl font-bold text-center text-gray-800">
+          You are not authorized to access this page
+        </h1>
+      </div>
+    );
+  }
 
   function onSubmit(values: UserValues) {
     console.log(values);
