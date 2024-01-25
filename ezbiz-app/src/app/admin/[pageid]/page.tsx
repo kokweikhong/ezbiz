@@ -47,8 +47,8 @@ export default function Page({ params }: { params: { pageid: string } }) {
 
   const updateContentMutate = useMutation({
     mutationFn: (values: ContentValues) => updateContent(values),
-    onSuccess: (data) => {
-      queryClient.setQueryData(["content", data.id], data);
+    onSuccess: () => {
+      queryClient.invalidateQueries(["content", params.pageid]);
     },
     onError: (error) => {
       console.log(error);

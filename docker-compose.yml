@@ -22,7 +22,7 @@ services:
     container_name: ezbiz-admin 
     restart: always
     ports:
-      - "3000:3001"
+      - "3001:3001"
     depends_on:
       - backend
     networks:
@@ -38,13 +38,18 @@ services:
     restart: always
     ports:
       - "8080:8080"
+    env_file:
+      - ./ezbiz-backend/.env
     depends_on:
       - postgres 
     networks:
       - ezbiz-network
+    volumes:
+      - ./ezbiz-backend/uploads:/app/uploads
     deploy:
       mode: replicated
       replicas: 1
+
 
   postgres:
     image: postgres:16.1-alpine3.19

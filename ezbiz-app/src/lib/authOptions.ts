@@ -1,5 +1,6 @@
 import type { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { signIn } from "@/services/auth";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -9,17 +10,23 @@ export const authOptions: AuthOptions = {
         email: { label: "Email", type: "text", placeholder: "jsmith" },
         password: { label: "Password", type: "password" },
       },
+
+      // @ts-ignore
       async authorize(credentials, req) {
         console.log(credentials);
-        const res = await fetch("http://localhost:8080/auth/login", {
-          method: "POST",
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
+        // const res = await fetch("http://localhost:8080/auth/login", {
+        //   method: "POST",
+        //   body: JSON.stringify(credentials),
+        //   headers: { "Content-Type": "application/json" },
+        // });
+        //
+        // coonst user = await res.json();
+        const user = await signIn({
+          email: credentials?.email ?? "",
+          password: credentials?.password ?? "",
         });
 
-        const user = await res.json();
-
-        if (res.ok && user) {
+        if (user) {
           return user;
         }
         return null;

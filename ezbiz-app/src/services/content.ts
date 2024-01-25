@@ -1,4 +1,4 @@
-"use server";
+// "use server";
 
 import type { ContentValues, DefaultContentValues } from "@/interfaces/content";
 import axios from "axios";
