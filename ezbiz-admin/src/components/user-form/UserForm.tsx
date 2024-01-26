@@ -23,6 +23,11 @@ const UserForm: FC<UserFormProps> = ({ onSubmit, buttonText, data }) => {
     defaultValues: data || {},
   });
 
+  const { errors } = form.formState;
+  console.log(errors);
+
+
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -36,6 +41,7 @@ const UserForm: FC<UserFormProps> = ({ onSubmit, buttonText, data }) => {
             </p>
 
             <div className="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
+              <input type="number" name="id"  defaultValue={0} value={form.watch("id")} hidden />
               <FirstNameInput form={form} />
               <LastNameInput form={form} />
               <EmailInput form={form} />

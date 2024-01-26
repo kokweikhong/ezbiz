@@ -7,20 +7,61 @@ import { ContentSchema, ContentValues } from "@/interfaces/content";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import ContentFormImageInput from "./ContentFormImageInput";
+import ContentColorInput from "./ContentColorInput";
+import ContentFormGalleryInput from "./ContentFormGalleryInput";
 import { FC } from "react";
+import { updateContent } from "@/services/content";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 type ContentFormProps = {
   data?: ContentValues;
 };
 
 const ContentForm: FC<ContentFormProps> = ({ data }) => {
+  const queryClient = useQueryClient();
+
+  const updateContentMutation = useMutation({
+    mutationFn: (values: ContentValues) => updateContent(values.id ?? -1, values),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["content", data?.id] });
+    },
+  });
+
+
   const form = useForm<ContentValues>({
     resolver: zodResolver(ContentSchema),
     defaultValues: data ?? {},
   });
 
+  const themeColor = form.watch("themeColor");
+  const defaultSaveDir = `pages/${form.watch("userId")}`
+
+  if (updateContentMutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
   function onSubmit(values: ContentValues) {
     console.log(values);
+    toast("Are you confirm to save this content?", {
+      action: {
+        label: "Yes",
+        onClick: () => {
+          toast.promise(updateContentMutation.mutateAsync(values), {
+            loading: "Saving content...",
+            success: (data) => {
+              return `Content id ${data.id} saved successfully`;
+            }
+          });
+        },
+      },
+      cancel: {
+        label: "No",
+        onClick: () => {
+          toast.dismiss();
+        },
+      },
+    });
   }
 
   return (
@@ -61,7 +102,18 @@ const ContentForm: FC<ContentFormProps> = ({ data }) => {
                 <ContentFormImageInput
                   field={field}
                   labelText="Background Image"
+                  themeColor={themeColor}
                 />
+              )}
+            />
+
+            {/* Theme Color */}
+            <FormField
+              control={form.control}
+              name="themeColor"
+              defaultValue="#000000"
+              render={({ field }) => (
+                <ContentColorInput field={field} />
               )}
             />
 
@@ -74,6 +126,7 @@ const ContentForm: FC<ContentFormProps> = ({ data }) => {
                 <ContentFormImageInput
                   field={field}
                   labelText="Profile Picture"
+                  themeColor={themeColor}
                 />
               )}
             />
@@ -87,6 +140,7 @@ const ContentForm: FC<ContentFormProps> = ({ data }) => {
                 <ContentFormImageInput
                   field={field}
                   labelText="Company Logo"
+                  themeColor={themeColor}
                 />
               )}
             />
@@ -127,7 +181,65 @@ const ContentForm: FC<ContentFormProps> = ({ data }) => {
               )}
             />
 
+            {/* Email Address */}
+            <FormField
+              control={form.control}
+              name="emailAddress"
+              defaultValue="example@example.com"
+              render={({ field }) => (
+                <ContentFormInput labelText="Email Address">
+                  <Input type="email" {...field} />
+                </ContentFormInput>
+              )}
+            />
 
+            {/* Website */}
+            <FormField
+              control={form.control}
+              name="website"
+              defaultValue=""
+              render={({ field }) => (
+                <ContentFormInput labelText="Website">
+                  <Input type="text" {...field} />
+                </ContentFormInput>
+              )}
+            />
+
+            {/* Location */}
+            <FormField
+              control={form.control}
+              name="location"
+              defaultValue=""
+              render={({ field }) => (
+                <ContentFormInput labelText="Location">
+                  <Input type="text" {...field} />
+                </ContentFormInput>
+              )}
+            />
+
+            {/* Gallery */}
+            <FormField
+              control={form.control}
+              name="gallery"
+              defaultValue={["", "", "", "", "", "", "", "", "", ""]}
+              render={({ field }) => (
+                <ContentFormGalleryInput
+                  control={form.control}
+                  field={field}
+                  saveDir={defaultSaveDir}
+                  themeColor={themeColor}
+                />
+              )}
+            />
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              style={{ backgroundColor: themeColor }}
+              className="inline-flex items-center px-6 py-3 text-base font-medium text-white border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+            >
+              Save
+            </button>
           </div>
         </div>
       </form>

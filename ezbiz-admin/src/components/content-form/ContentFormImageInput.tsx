@@ -14,6 +14,7 @@ type ContentFormImageInputProps = {
   saveDir?: string;
   newFileName?: string;
   labelText: string;
+  themeColor?: string;
 };
 
 const ContentFormImageInput: FC<ContentFormImageInputProps> = ({
@@ -21,6 +22,7 @@ const ContentFormImageInput: FC<ContentFormImageInputProps> = ({
   saveDir,
   newFileName,
   labelText,
+  themeColor,
 }) => {
   async function handleUploadFile(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -78,7 +80,7 @@ const ContentFormImageInput: FC<ContentFormImageInputProps> = ({
           )}
           <div className="mt-4 flex text-sm leading-6 text-gray-600">
             <FormLabel className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
-              <span className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none">
+              <span style={{ backgroundColor: themeColor }} className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none">
                 Select a file
               </span>
               <FormControl className="mt-2 sm:col-span-2 sm:mt-0">
