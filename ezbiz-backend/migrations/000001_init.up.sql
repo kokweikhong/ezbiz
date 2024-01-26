@@ -48,25 +48,29 @@ ALTER TABLE "contents" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON 
 
 -- generate socials with url empty and image_path empty
 INSERT INTO "socials" ("id", "name", "url", "image_path", "placeholder") VALUES
-(1, 'facebook', '', '', 'https://www.facebook.com/'),
-(2, 'twitter', '', '', 'https://twitter.com/'),
-(3, 'instagram', '', '', 'https://www.instagram.com/'),
-(4, 'linkedin', '', '', 'https://www.linkedin.com/'),
-(5, 'youtube', '', '', 'https://www.youtube.com/'),
-(6, 'tiktok', '', '', 'https://www.tiktok.com/'),
-(7, 'pinterest', '', '', 'https://www.pinterest.com/'),
-(8, 'snapchat', '', '', 'https://www.snapchat.com/'),
-(9, 'tumblr', '', '', 'https://www.tumblr.com/'),
-(10, 'reddit', '', '', 'https://www.reddit.com/'),
-(11, 'whatsapp', '', '', 'https://www.whatsapp.com/'),
-(12, 'telegram', '', '', 'https://telegram.org/'),
-(13, 'line', '', '', 'https://line.me/'),
-(14, 'wechat', '', '', 'https://www.wechat.com/'),
-(15, 'viber', '', '', 'https://www.viber.com/'),
-(16, 'skype', '', '', 'https://www.skype.com/'),
-(17, 'waze', '', '', 'https://www.waze.com/')
+(1, 'website', '', 'uploads/socials/website.svg', 'https://www.yourwebsite.com/'),
+(2, 'facebook', '', 'uploads/socials/facebook.svg', 'https://www.facebook.com/'),
+(3, 'twitter', '', '', 'https://twitter.com/'),
+(4, 'instagram', '', 'uploads/socials/instagram.svg', 'https://www.instagram.com/'),
+(5, 'linkedin', '', '', 'https://www.linkedin.com/'),
+(6, 'youtube', '', '', 'https://www.youtube.com/'),
+(7, 'tiktok', '', '', 'https://www.tiktok.com/'),
+(8, 'pinterest', '', '', 'https://www.pinterest.com/'),
+(9, 'snapchat', '', '', 'https://www.snapchat.com/'),
+(10, 'tumblr', '', '', 'https://www.tumblr.com/'),
+(11, 'reddit', '', '', 'https://www.reddit.com/'),
+(12, 'whatsapp', '', 'uploads/socials/facebook.svg', 'https://www.whatsapp.com/'),
+(13, 'telegram', '', '', 'https://telegram.org/'),
+(14, 'line', '', '', 'https://line.me/'),
+(15, 'wechat', '', '', 'https://www.wechat.com/'),
+(16, 'viber', '', '', 'https://www.viber.com/'),
+(17, 'skype', '', '', 'https://www.skype.com/'),
+(18, 'telephone', '', 'uploads/socials/telephone.svg', '6016xxxxxxxx'),
+(19, 'sms', '', 'uploads/socials/sms.svg', '6016xxxxxxxx'),
+(19, 'messenger', '', 'uploads/socials/messenger.svg', 'https://www.messenger.com/'),
+(20, 'location', '', 'uploads/socials/location.svg', 'https://maps.google.com'),
+(21, 'waze', '', 'uploads/socials/waze.svg', 'https://www.waze.com/')
 ON CONFLICT DO NOTHING;
 
 -- set next id for socials
 SELECT setval('socials_id_seq', (SELECT MAX(id) FROM socials));
-
