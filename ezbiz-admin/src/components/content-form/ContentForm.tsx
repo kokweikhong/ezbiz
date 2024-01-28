@@ -1,6 +1,7 @@
 "use client";
 
 import ContentFormInput from "@/components/content-form/ContentFormInput";
+import ContentFormSocialMediasInput from "./ContentFormSocialMediasInput";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ContentSchema, ContentValues } from "@/interfaces/content";
@@ -22,30 +23,31 @@ type ContentFormProps = {
 };
 
 const ContentForm: FC<ContentFormProps> = ({ data }) => {
+  console.log(data);
   const queryClient = useQueryClient();
 
-  const socials = useQuery({
-    queryKey: ["socials"],
-    queryFn: () => getSocials(),
-
-
-    // onSuccess: (socials: SocialValues[]) => {
-    //   // merge socials into data, and if data's social is empty, use socials
-    //   // if data social is not empty, use data social url
-    //   // const socialsMap = new Map(socials.map((social) => [social.name, social]));
-    //   const socialsData = data?.socialMedias ?? [];
-    //   const socialsDataMap = new Map(socialsData.map((social) => [social.name, social]));
-    //   const mergedSocials = socials.map((social) => {
-    //     const dataSocial = socialsDataMap.get(social.name);
-    //     if (dataSocial) {
-    //       return dataSocial;
-    //     }
-    //     return social;
-    //   });
-    //   form.setValue("socialMedias", mergedSocials);
-    // },
-
-  });
+  // const socials = useQuery({
+  //   queryKey: ["socials"],
+  //   queryFn: () => getSocials(),
+  //
+  //
+  // onSuccess: (socials: SocialValues[]) => {
+  //   // merge socials into data, and if data's social is empty, use socials
+  //   // if data social is not empty, use data social url
+  //   // const socialsMap = new Map(socials.map((social) => [social.name, social]));
+  //   const socialsData = data?.socialMedias ?? [];
+  //   const socialsDataMap = new Map(socialsData.map((social) => [social.name, social]));
+  //   const mergedSocials = socials.map((social) => {
+  //     const dataSocial = socialsDataMap.get(social.name);
+  //     if (dataSocial) {
+  //       return dataSocial;
+  //     }
+  //     return social;
+  //   });
+  //   form.setValue("socialMedias", mergedSocials);
+  // },
+  //
+  // });
 
   const updateContentMutation = useMutation({
     mutationFn: (values: ContentValues) => updateContent(values.id ?? -1, values),
@@ -64,22 +66,10 @@ const ContentForm: FC<ContentFormProps> = ({ data }) => {
   const themeColor = form.watch("themeColor");
   const defaultSaveDir = `pages/${form.watch("userId")}`
 
-  if (updateContentMutation.isPending || socials.isLoading) {
+  if (updateContentMutation.isPending) {
     return <div>Loading...</div>;
   }
 
-  if (socials.isSuccess) {
-    // const socialsData = data?.socialMedias ?? [];
-    // const socialsDataMap = new Map(socialsData.map((social) => [social.name, social]));
-    // const mergedSocials = socials?.data?.map((social) => {
-    //   const dataSocial = socialsDataMap.get(social.name);
-    //   if (dataSocial) {
-    //     return dataSocial;
-    //   }
-    //   return social;
-    // });
-    // form.setValue("socialMedias", mergedSocials);
-  }
 
   const errors = form.formState.errors;
 
@@ -262,12 +252,23 @@ const ContentForm: FC<ContentFormProps> = ({ data }) => {
               )}
             />
 
-            {/* Social Media */}
-            {socials.isSuccess && (
-              form.watch("socialMedias")?.map((social, index) => (
-                <p key={index}>{social.name}</p>
-              ))
-            )}
+            {/* Social Medias */}
+            <FormField
+              control={form.control}
+              name="socialMedias"
+              defaultValue={[]}
+              render={({ field }) => (
+
+                <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+                  <span className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">
+                    Social Medias
+                  </span>
+                  <div className="mt-1 sm:mt-0 sm:col-span-2">
+                    <ContentFormSocialMediasInput form={form} field={field} />
+                  </div>
+                </div>
+              )}
+            />
 
             {/* Gallery */}
             <FormField

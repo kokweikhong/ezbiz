@@ -1,13 +1,13 @@
 "use client";
 
 import ContentForm from "@/components/content-form/ContentForm";
-import { getContent } from "@/services/content";
+import { getContent, getContentWithDefaultSocials } from "@/services/content";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Page({ params }: { params: { pageid: string } }) {
   const content = useQuery({
     queryKey: ["content", params.pageid],
-    queryFn: () => getContent(parseInt(params.pageid)),
+    queryFn: () => getContentWithDefaultSocials(parseInt(params.pageid)),
   });
 
   if (content.isLoading) {
@@ -16,6 +16,10 @@ export default function Page({ params }: { params: { pageid: string } }) {
 
   if (content.isError) {
     throw content.error;
+  }
+
+  if (content.data) {
+    console.log(content.data);
   }
 
   return (
