@@ -2,7 +2,7 @@ import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 export const UserSchema = z.object({
-  id: z.number(),
+  id: z.number().optional(),
   firstName: z.string(),
   lastName: z.string(),
   email: z.string().email(),

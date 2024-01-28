@@ -9,10 +9,13 @@ import { useForm } from "react-hook-form";
 import ContentFormImageInput from "./ContentFormImageInput";
 import ContentColorInput from "./ContentColorInput";
 import ContentFormGalleryInput from "./ContentFormGalleryInput";
+import ContentFormRichTextInput from "./ContentFormRichTextInput";
 import { FC } from "react";
 import { updateContent } from "@/services/content";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { getSocials } from "@/services/socials";
 import { toast } from "sonner";
+import { SocialValues } from "@/interfaces/social";
 
 type ContentFormProps = {
   data?: ContentValues;
@@ -21,12 +24,36 @@ type ContentFormProps = {
 const ContentForm: FC<ContentFormProps> = ({ data }) => {
   const queryClient = useQueryClient();
 
+  const socials = useQuery({
+    queryKey: ["socials"],
+    queryFn: () => getSocials(),
+
+
+    // onSuccess: (socials: SocialValues[]) => {
+    //   // merge socials into data, and if data's social is empty, use socials
+    //   // if data social is not empty, use data social url
+    //   // const socialsMap = new Map(socials.map((social) => [social.name, social]));
+    //   const socialsData = data?.socialMedias ?? [];
+    //   const socialsDataMap = new Map(socialsData.map((social) => [social.name, social]));
+    //   const mergedSocials = socials.map((social) => {
+    //     const dataSocial = socialsDataMap.get(social.name);
+    //     if (dataSocial) {
+    //       return dataSocial;
+    //     }
+    //     return social;
+    //   });
+    //   form.setValue("socialMedias", mergedSocials);
+    // },
+
+  });
+
   const updateContentMutation = useMutation({
     mutationFn: (values: ContentValues) => updateContent(values.id ?? -1, values),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["content", data?.id] });
     },
   });
+
 
 
   const form = useForm<ContentValues>({
@@ -37,9 +64,27 @@ const ContentForm: FC<ContentFormProps> = ({ data }) => {
   const themeColor = form.watch("themeColor");
   const defaultSaveDir = `pages/${form.watch("userId")}`
 
-  if (updateContentMutation.isPending) {
+  if (updateContentMutation.isPending || socials.isLoading) {
     return <div>Loading...</div>;
   }
+
+  if (socials.isSuccess) {
+    // const socialsData = data?.socialMedias ?? [];
+    // const socialsDataMap = new Map(socialsData.map((social) => [social.name, social]));
+    // const mergedSocials = socials?.data?.map((social) => {
+    //   const dataSocial = socialsDataMap.get(social.name);
+    //   if (dataSocial) {
+    //     return dataSocial;
+    //   }
+    //   return social;
+    // });
+    // form.setValue("socialMedias", mergedSocials);
+  }
+
+  const errors = form.formState.errors;
+
+  console.log(errors);
+
 
   function onSubmit(values: ContentValues) {
     console.log(values);
@@ -217,6 +262,13 @@ const ContentForm: FC<ContentFormProps> = ({ data }) => {
               )}
             />
 
+            {/* Social Media */}
+            {socials.isSuccess && (
+              form.watch("socialMedias")?.map((social, index) => (
+                <p key={index}>{social.name}</p>
+              ))
+            )}
+
             {/* Gallery */}
             <FormField
               control={form.control}
@@ -231,6 +283,10 @@ const ContentForm: FC<ContentFormProps> = ({ data }) => {
                 />
               )}
             />
+
+
+            {/* Content */}
+            <ContentFormRichTextInput form={form} />
           </div>
           <div className="flex justify-end">
             <button
