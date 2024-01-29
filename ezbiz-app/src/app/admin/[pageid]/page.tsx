@@ -92,17 +92,11 @@ export default function Page({ params }: { params: { pageid: string } }) {
   //   form.setValue("socialMedias", socialMediasWithDefault);
   // }
 
-  if (content.isLoading) {
-    return <LoadingOverlay />
-  }
 
   // if (socials.isError) {
   //   throw socials.error;
   // }
 
-  if (content.isError) {
-    throw content.error;
-  }
 
   async function onSubmit(values: ContentValues) {
     console.log(values);
@@ -116,11 +110,24 @@ export default function Page({ params }: { params: { pageid: string } }) {
     });
   }
 
+
+  if (content.isLoading) {
+    return <LoadingOverlay />
+  }
+
+  if (content.isError) {
+    throw content.error;
+  }
+
+  if (!content.data) {
+    return <div>Page not found</div>
+  }
+
   // useEffect(() => {
   //   mergeSocialMedias(form.getValues());
   // }, []);
 
-  console.log(form.formState.errors);
+  // console.log(form.formState.errors);
 
   // if (content.isLoading) {
   //   return <div>Loading...</div>;
