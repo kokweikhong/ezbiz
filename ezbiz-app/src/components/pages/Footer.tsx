@@ -7,14 +7,14 @@ type FooterProps = {
 const Footer: React.FC<FooterProps> = ({ themeColor }) => {
   return (
     <footer className="text-white">
-      <div className="text-center max-w-[500px] mx-auto py-[30px]">
+      <div className="text-center py-[30px] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 className="font-semibold text-[22px] mb-[20px]">
           Sign Up for Our Newsletter
         </h2>
         <p className="font-normal">{`Subscribe to us to always stay in touch with us and get the latest news about our company and all of our promotions!`}</p>
       </div>
 
-      <div className="max-w-[500px] py-[20px] mx-auto">
+      <div className="py-[20px] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <ClientEnquiryForm themeColor={themeColor} />
       </div>
 

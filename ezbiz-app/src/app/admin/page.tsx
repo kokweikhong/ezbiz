@@ -23,6 +23,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "sonner";
 import Image from "next/image";
 import { imageLoader } from "@/lib/image";
+import LoadingOverlay from "@/components/LoadingOverlay";
 
 export default function Page() {
   const { data: session, status } = useSession();
@@ -69,12 +70,8 @@ export default function Page() {
     });
   }
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (contents.isLoading) {
-    return <div>Loading...</div>;
+  if (status === "loading" || contents.isLoading) {
+    return <LoadingOverlay />;
   }
 
   if (contents.isError) {
@@ -197,13 +194,13 @@ export default function Page() {
                 <div className="flex flex-none items-center gap-x-2">
                   <Link
                     href={`/pages/${content.url}`}
-                    className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
+                    className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                   >
                     View<span className="sr-only">, {content.url}</span>
                   </Link>
                   <Link
                     href={`/admin/${content.id}`}
-                    className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
+                    className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                   >
                     Edit<span className="sr-only">, {content.id}</span>
                   </Link>

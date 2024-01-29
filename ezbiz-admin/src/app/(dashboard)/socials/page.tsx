@@ -8,29 +8,14 @@ import { imageLoader, isWithImageExtension } from "@/lib/image";
 import Link from "next/link";
 import { EditIcon, TrashIcon } from "lucide-react";
 import { toast } from "sonner";
-
-const people = [
-  {
-    name: "Lindsay Walton",
-    role: "Front-end Developer",
-    imageUrl:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Courtney Henry",
-    role: "Designer",
-    imageUrl:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Tom Cook",
-    role: "Director of Product",
-    imageUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-];
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 export default function Page() {
+
+  const [bgColor, setBgColor] = useState("bg-white");
 
   const socials = useQuery({
     queryKey: ["socials"],
@@ -102,6 +87,14 @@ export default function Page() {
           Create a new social
         </Link>
       </div>
+
+      <div className="flex items-center space-x-2 mt-6">
+        <Switch id="airplane-mode" onCheckedChange={() => {
+          setBgColor(bgColor === "bg-white" ? "bg-black" : "bg-white");
+        }} />
+        <Label htmlFor="airplane-mode">{bgColor === "bg-white" ? "White" : "Black"}</Label>
+      </div>
+
       <div className="mt-10">
         <h3 className="text-sm font-medium text-gray-500">
           Socials you added
@@ -118,14 +111,16 @@ export default function Page() {
               <div className="flex min-w-0 flex-1 items-center space-x-3">
                 <div className="flex-shrink-0">
                   {social.imagePath && isWithImageExtension(social.imagePath) ? (
-                    <Image
-                      loader={imageLoader}
-                      src={social.imagePath}
-                      alt={social.name}
-                      width={40}
-                      height={40}
-                      className="h-10 w-10 rounded-full"
-                    />
+                    <div className={cn(bgColor)}>
+                      <Image
+                        loader={imageLoader}
+                        src={social.imagePath}
+                        alt={social.name}
+                        width={40}
+                        height={40}
+                        className="h-10 w-10 rounded-full"
+                      />
+                    </div>
                   ) : (
                     <ImageOffIcon className="h-10 w-10 rounded-full text-gray-500" />
                   )}

@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import LoadingDots from "./LoadingDots";
 
 type HeaderProps = {
   setSidebarOpen: (open: boolean) => void;
@@ -19,6 +20,10 @@ const Header: FC<HeaderProps> = ({ setSidebarOpen }) => {
   if (status === "unauthenticated") {
     redirect("/auth/signin");
   }
+
+  // if (status === "loading") {
+  //   return <LoadingDots />;
+  // }
 
   return (
     <header className="sticky top-0 z-40 lg:mx-auto lg:max-w-7xl lg:px-8">

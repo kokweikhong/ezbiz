@@ -40,7 +40,7 @@ const ClientEnquiryForm: React.FC<ClientEnquiryFormProps> = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="text-center flex flex-col gap-y-[25px]">
+        <div className="text-center flex flex-col gap-y-[25px] max-w-[500px] mx-auto">
           <FormField
             control={form.control}
             name="name"

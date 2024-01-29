@@ -59,8 +59,9 @@ export default function Page({ params }: { params: { pageid: string } }) {
           )}
         <div
           className={cn(
-            "absolute top-0 left-1/2 -translate-x-1/2 w-full h-full z-20 flex flex-col items-center justify-center text-white",
-            sectionClass
+            "absolute top-0 left-1/2 -translate-x-1/2 w-full h-full z-20 flex flex-col items-center justify-between text-white",
+            sectionClass,
+            "py-8",
           )}
         >
           <div className="w-full flex justify-between p-[10px]">
@@ -77,7 +78,7 @@ export default function Page({ params }: { params: { pageid: string } }) {
             <ShareContent themeColor={content.data.themeColor} />
           </div>
 
-          <div className="rounded-full overflow-hidden border-4 border-white bg-white mt-[20px]">
+          <div className="rounded-full overflow-hidden border-4 border-white bg-white mt-8">
             {content.data.profilePicture &&
               isWithImageExtension(content.data.profilePicture) && (
                 <Image
@@ -91,16 +92,16 @@ export default function Page({ params }: { params: { pageid: string } }) {
               )}
           </div>
 
-          <div className="text-center mt-[20px] font-semibold">
+          <div className="text-center mt-8 font-semibold">
             <h2 className="text-[26px] mb-[5px]">{content.data.displayName}</h2>
             <h2 className="text-[21px]">{content.data.businessTagline}</h2>
           </div>
 
-          <div>
-            <SocialMedias data={content.data.socialMedias} />
+          <div className="mt-8">
+            <SocialMedias data={content.data?.socialMedias ?? []} />
           </div>
 
-          <div className="mt-[20px] font-semibold">
+          <div className="mt-8 font-semibold">
             <SaveContact
               name={content.data.displayName}
               email={content.data.emailAddress}

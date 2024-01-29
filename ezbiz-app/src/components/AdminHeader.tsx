@@ -6,19 +6,17 @@ import { MenuIcon, XIcon } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
-
-// const navigation = [
-//   { name: "Product", href: "#" },
-//   { name: "Features", href: "#" },
-//   { name: "Marketplace", href: "#" },
-//   { name: "Company", href: "#" },
-// ];
+import logo from "@/../public/logo.jpg";
+import Image from "next/image";
+import LoadingDots from "./LoadingDots";
 
 const AdminHeader = () => {
   const { data: session, status } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  if (status === "loading") return <div>Loading...</div>;
+  console.log(session?.user);
+
+  if (status === "loading") return <LoadingDots />;
 
   return (
     <header className="bg-white">
@@ -27,14 +25,17 @@ const AdminHeader = () => {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
+          <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
-            <img
-              className="h-8 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              alt=""
+            <Image
+              className="h-14 w-auto"
+              src={logo}
+              alt="Ezbiz Logo"
+              width={40}
+              height={40}
+              priority
             />
-          </a>
+          </Link>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -68,7 +69,7 @@ const AdminHeader = () => {
           ))}
         </div> */}
         <div className="hidden lg:items-center lg:flex lg:flex-1 lg:justify-end">
-          {session?.user?.firstName ? (
+          {session?.user.firstName ? (
             <div className="flex items-center space-x-2">
               <span>
                 Welcome, <strong>{session.user.firstName}</strong>
@@ -126,7 +127,7 @@ const AdminHeader = () => {
                 )}
               </div>
               <div className="py-6">
-                {session?.user?.name ? (
+                {session ? (
                   <div className="-mx-3 space-y-2 flex flex-col justify-center items-start">
                     <span>
                       Welcome, <strong>{session.user.firstName}</strong>

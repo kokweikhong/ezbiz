@@ -281,15 +281,6 @@ const TiptapEditor: React.FC<TiptapEditorProps> = ({ field }) => {
     <div className="w-full">
       <MenuBar editor={editor} />
       <article className="prose lg:prose-xl">
-        {/* <EditorProvider
-          slotBefore={<MenuBar />}
-          extensions={extensions}
-          content={content}
-          onUpdate={(e) => {
-            console.log(e);
-          }}
-          children
-        ></EditorProvider> */}
         <EditorContent editor={editor} />
       </article>
     </div>

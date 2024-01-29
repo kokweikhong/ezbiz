@@ -2,6 +2,7 @@
 
 import type { ContentValues, DefaultContentValues } from "@/interfaces/content";
 import axios from "axios";
+import { getSocials } from "./socials";
 
 const axiosContent = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_EZBIZ_BACKEND_URL}/contents`,
@@ -25,6 +26,28 @@ export async function getContentsByUserId(
 export async function getContentById(id: string): Promise<ContentValues> {
   const res = await axiosContent.get(`/${id}`);
   return res.data;
+}
+
+export async function getContentWithDefaultSocials(id: string) {
+  const resSocials = await getSocials();
+  const resContent = await getContentById(id);
+
+  return {
+    ...resContent,
+    socialMedias: resContent.socialMedias.map((social) => {
+      const contentSocial = resSocials.find(
+        (contentSocial) => contentSocial.name === social.name
+      );
+      if (contentSocial) {
+        return {
+          ...social,
+          url: social.url,
+        };
+      } else {
+        return social;
+      }
+    })
+  };
 }
 
 export async function createDefaultContent(data: DefaultContentValues) {

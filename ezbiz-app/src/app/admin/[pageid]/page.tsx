@@ -16,7 +16,7 @@ import {
 } from "@/interfaces/content";
 // import { demoPageDetails } from "@/lib/mockdata";
 import { cn } from "@/lib/utils";
-import { getContentById, updateContent } from "@/services/content";
+import { getContentById, updateContent, getContentWithDefaultSocials } from "@/services/content";
 import { getSocials } from "@/services/socials";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
@@ -35,15 +35,17 @@ export default function Page({ params }: { params: { pageid: string } }) {
 
   const content = useQuery(
     ["content", params.pageid],
-    () => getContentById(params.pageid),
+    () => getContentWithDefaultSocials(params.pageid),
     {
       onSuccess: (data) => {
         form.reset(data);
-        mergeSocialMedias(data);
+        // mergeSocialMedias(data);
       },
       enabled: !!params.pageid,
     }
   );
+
+  console.log(content.data);
 
   const updateContentMutate = useMutation({
     mutationFn: (values: ContentValues) => updateContent(values),
