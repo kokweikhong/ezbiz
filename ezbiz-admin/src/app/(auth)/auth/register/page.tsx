@@ -2,11 +2,11 @@
 
 import UserForm from "@/components/user-form/UserForm";
 import { UserValues } from "@/interfaces/user";
-import { createUser } from "@/services/users";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { createUser, getUsers } from "@/services/users";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { getUsers } from "@/services/users";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Page() {
   const { data: session } = useSession();
@@ -14,7 +14,7 @@ export default function Page() {
   const users = useQuery({
     queryKey: ["users"],
     queryFn: () => getUsers(),
-  })
+  });
 
   const queryClient = useQueryClient();
 
@@ -33,8 +33,12 @@ export default function Page() {
     throw users.error;
   }
 
-  if (users.data && users.data.length > 0 &&
-    session && session.user.role !== "admin") {
+  if (
+    users.data &&
+    users.data.length > 0 &&
+    session &&
+    session.user.role !== "admin"
+  ) {
     return (
       <div className="mt-12">
         <h1 className="text-2xl font-bold text-center text-gray-800">
@@ -52,7 +56,10 @@ export default function Page() {
         onClick: () => {
           toast.promise(createUserMutation.mutateAsync(values), {
             loading: "Creating user...",
-            success: "User created successfully",
+            success(data) {
+              redirect("/users");
+              return `User ${data} created successfully`;
+            },
             error: "Error creating user",
           });
         },
