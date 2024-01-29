@@ -1,12 +1,9 @@
 "use client";
 
 import UserForm from "@/components/user-form/UserForm";
-import { UserSchema, UserValues } from "@/interfaces/user";
+import { UserValues } from "@/interfaces/user";
 import { getUser, updateUser } from "@/services/users";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export default function Page({ params }: { params: { userid: string } }) {
@@ -19,7 +16,7 @@ export default function Page({ params }: { params: { userid: string } }) {
   });
 
   const updateUserMutation = useMutation({
-    mutationFn: (values: UserValues) => updateUser(values.id, values),
+    mutationFn: (values: UserValues) => updateUser(values.id ?? -1, values),
     onSuccess: (data) => {
       queryClient.setQueryData(["users", data.id], data);
     },
