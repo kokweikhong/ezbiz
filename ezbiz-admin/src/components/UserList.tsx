@@ -1,15 +1,13 @@
 "use client";
 
-import { mockUsers } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
-import { deleteUser } from "@/services/users";
+import { deleteUser, getUsers } from "@/services/users";
 import { Menu, Transition } from "@headlessui/react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircleIcon, MoreVerticalIcon, XCircleIcon } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
 import { toast } from "sonner";
-import { getUsers } from "@/services/users";
 
 const UserList = () => {
   const queryClient = useQueryClient();
@@ -19,7 +17,6 @@ const UserList = () => {
     queryKey: ["users"],
     queryFn: () => getUsers(),
   });
-
 
   const deleteUserMutation = useMutation({
     mutationFn: (id: number) => deleteUser(id),
@@ -96,7 +93,9 @@ const UserList = () => {
           </div>
           <div className="flex items-center gap-x-6">
             <div className="hidden sm:flex sm:flex-col sm:items-end">
-              <p className="text-sm leading-6 text-gray-900 capitalize">{user.role}</p>
+              <p className="text-sm leading-6 text-gray-900 capitalize">
+                {user.role}
+              </p>
               {user.createdAt && (
                 <p className="mt-1 text-xs leading-5 text-gray-500">
                   Created at{" "}
@@ -147,7 +146,10 @@ const UserList = () => {
                     {({ active }) => (
                       <button
                         type="button"
-                        onClick={() => handleDeleteUser(user.id)}
+                        onClick={() => {
+                          if (!user.id) return;
+                          handleDeleteUser(user.id);
+                        }}
                         className={cn(
                           active ? "bg-gray-50" : "",
                           "block px-3 py-1 text-sm leading-6 text-gray-900 w-full text-left"
