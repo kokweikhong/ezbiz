@@ -39,6 +39,7 @@ export default function Page({ params }: { params: { pageid: string } }) {
     () => getContentWithDefaultSocials(params.pageid),
     {
       onSuccess: (data) => {
+        if (!data) return;
         form.reset(data);
         // mergeSocialMedias(data);
       },
@@ -65,9 +66,6 @@ export default function Page({ params }: { params: { pageid: string } }) {
 
   const form = useForm<ContentValues>({
     resolver: zodResolver(contentSchema),
-    defaultValues: content.data || {
-      socialMedias: defaultSocialMedias,
-    },
   });
 
   const themeColor = form.watch("themeColor");
