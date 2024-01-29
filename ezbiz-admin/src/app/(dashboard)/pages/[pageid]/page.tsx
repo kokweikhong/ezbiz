@@ -1,17 +1,19 @@
 "use client";
 
+import LoadingOverlay from "@/components/LoadingOverlay";
 import ContentForm from "@/components/content-form/ContentForm";
-import { getContent, getContentWithDefaultSocials } from "@/services/content";
+import { getContentWithDefaultSocials } from "@/services/content";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Page({ params }: { params: { pageid: string } }) {
   const content = useQuery({
     queryKey: ["content", params.pageid],
     queryFn: () => getContentWithDefaultSocials(parseInt(params.pageid)),
+    enabled: !!params.pageid,
   });
 
   if (content.isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingOverlay />;
   }
 
   if (content.isError) {
