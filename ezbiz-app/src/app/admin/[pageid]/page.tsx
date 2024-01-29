@@ -116,6 +116,7 @@ export default function Page({ params }: { params: { pageid: string } }) {
   }
 
   if (content.isError) {
+    console.log(content.error);
     throw content.error;
   }
 

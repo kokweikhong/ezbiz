@@ -32,6 +32,9 @@ export async function getContentWithDefaultSocials(id: string) {
   const resSocials = await getSocials();
   const resContent = await getContentById(id);
 
+  console.log(resContent);
+  console.log(resSocials);
+
   return {
     ...resContent,
     socialMedias: resContent.socialMedias.map((social) => {
