@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingOverlay from "@/components/LoadingOverlay";
 import ContentGallery from "@/components/content-form/ContentGallery";
 import ContentImageInput from "@/components/content-form/ContentImageInput";
 import ContentInput from "@/components/content-form/ContentInput";
@@ -26,12 +27,12 @@ import { toast } from "sonner";
 
 export default function Page({ params }: { params: { pageid: string } }) {
   const queryClient = useQueryClient();
-  const socials = useQuery({
-    queryKey: ["socials"],
-    queryFn: () => getSocials(),
-  });
+  // const socials = useQuery({
+  //   queryKey: ["socials"],
+  //   queryFn: () => getSocials(),
+  // });
 
-  console.log(socials.data);
+  // console.log(socials.data);
 
   const content = useQuery(
     ["content", params.pageid],
@@ -72,23 +73,35 @@ export default function Page({ params }: { params: { pageid: string } }) {
   const themeColor = form.watch("themeColor");
 
   // merge socialMedias default to form and keep the form url.
-  function mergeSocialMedias(data: ContentValues) {
-    if (!socials.data) return;
-    // const socialMedias = form.getValues("socialMedias");
-    if (!data.socialMedias) {
-      form.setValue("socialMedias", socials.data);
-      return;
-    }
-    const socialMediasWithDefault = socials.data.map((item) => {
-      const socialMedia = data.socialMedias.find(
-        (socialMedia) => socialMedia.name === item.name
-      );
-      return {
-        ...item,
-        url: socialMedia?.url || "",
-      };
-    });
-    form.setValue("socialMedias", socialMediasWithDefault);
+  // function mergeSocialMedias(data: ContentValues) {
+  //   if (!socials.data) return;
+  //   // const socialMedias = form.getValues("socialMedias");
+  //   if (!data.socialMedias) {
+  //     form.setValue("socialMedias", socials.data);
+  //     return;
+  //   }
+  //   const socialMediasWithDefault = socials.data.map((item) => {
+  //     const socialMedia = data.socialMedias.find(
+  //       (socialMedia) => socialMedia.name === item.name
+  //     );
+  //     return {
+  //       ...item,
+  //       url: socialMedia?.url || "",
+  //     };
+  //   });
+  //   form.setValue("socialMedias", socialMediasWithDefault);
+  // }
+
+  if (content.isLoading) {
+    return <LoadingOverlay />
+  }
+
+  // if (socials.isError) {
+  //   throw socials.error;
+  // }
+
+  if (content.isError) {
+    throw content.error;
   }
 
   async function onSubmit(values: ContentValues) {
@@ -103,19 +116,19 @@ export default function Page({ params }: { params: { pageid: string } }) {
     });
   }
 
-  useEffect(() => {
-    mergeSocialMedias(form.getValues());
-  }, []);
+  // useEffect(() => {
+  //   mergeSocialMedias(form.getValues());
+  // }, []);
 
   console.log(form.formState.errors);
 
-  if (content.isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (content.isError) {
-    throw content.error;
-  }
+  // if (content.isLoading) {
+  //   return <div>Loading...</div>;
+  // }
+  //
+  // if (content.isError) {
+  //   throw content.error;
+  // }
 
   return (
     <Form {...form}>
