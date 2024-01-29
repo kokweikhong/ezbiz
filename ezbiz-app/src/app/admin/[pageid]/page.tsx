@@ -96,15 +96,27 @@ export default function Page({ params }: { params: { pageid: string } }) {
   // }
 
 
-  async function onSubmit(values: ContentValues) {
-    console.log(values);
-    toast.promise(updateContentMutate.mutateAsync(values), {
-      loading: "Updating content...",
-      success: "Content updated successfully",
-      error(error) {
-        console.log(error);
-        return error.message;
+  function onSubmit(values: ContentValues) {
+    toast("Are you sure you want to update?", {
+      action: {
+        label: "Yes",
+        onClick: () => {
+          toast.promise(
+            updateContentMutate.mutateAsync(values),
+            {
+              loading: "Updating...",
+              success: "Updated!",
+              error: "Error updating",
+            },
+          )
+        }
       },
+      cancel: {
+        label: "No",
+        onClick: () => {
+          toast.dismiss();
+        }
+      }
     });
   }
 
