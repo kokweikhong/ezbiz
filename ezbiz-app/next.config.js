@@ -13,6 +13,12 @@ const nextConfig = {
         protocol: "https",
         hostname: "swiperjs.com",
       },
+      {
+        protocol: "http",
+        hostname: "159.223.51.20",
+        port: "8080",
+        pathname: "/uploads/**",
+      },
     ],
   },
 };
