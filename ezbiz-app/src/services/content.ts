@@ -1,11 +1,11 @@
-// "use server";
+"use server";
 
 import type { ContentValues, DefaultContentValues } from "@/interfaces/content";
 import axios from "axios";
 import { getSocials } from "./socials";
 
 const axiosContent = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_EZBIZ_BACKEND_URL}/contents`,
+  baseURL: `${process.env.EZBIZ_BACKEND_URL}/contents`,
   headers: {
     "Content-Type": "application/json",
   },
