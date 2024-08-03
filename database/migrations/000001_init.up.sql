@@ -1,0 +1,63 @@
+CREATE TYPE role AS ENUM ('user', 'admin');
+
+CREATE TABLE IF NOT EXISTS users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role role NOT NULL DEFAULT 'user',
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  is_verified BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS contents (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  subtitle VARCHAR(255) NOT NULL DEFAULT '',
+  url VARCHAR(255) NOT NULL UNIQUE,
+  color VARCHAR(255) NOT NULL DEFAULT '',
+  about TEXT NOT NULL DEFAULT '',
+  favicon VARCHAR(255) NOT NULL DEFAULT '',
+  background_image VARCHAR(255) NOT NULL DEFAULT '',
+  profile_image VARCHAR(255) NOT NULL DEFAULT '',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS socials (
+  id SERIAL PRIMARY KEY,
+  content_id UUID NOT NULL,
+  phone_number VARCHAR(255) NOT NULL DEFAULT '',
+  sms VARCHAR(255) NOT NULL DEFAULT '',
+  email VARCHAR(255) NOT NULL DEFAULT '',
+  whatsapp VARCHAR(255) NOT NULL DEFAULT '',
+  facebook VARCHAR(255) NOT NULL DEFAULT '',
+  instagram VARCHAR(255) NOT NULL DEFAULT '',
+  messenger VARCHAR(255) NOT NULL DEFAULT '',
+  website VARCHAR(255) NOT NULL DEFAULT '',
+  location VARCHAR(255) NOT NULL DEFAULT '',
+  google_maps VARCHAR(255) NOT NULL DEFAULT '',
+  waze VARCHAR(255) NOT NULL DEFAULT '',
+
+  FOREIGN KEY (content_id) REFERENCES contents(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS images (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  content_id UUID NOT NULL,
+  url VARCHAR(255) NOT NULL,
+
+  FOREIGN KEY (content_id) REFERENCES contents(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_name ON users(name);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_contents_title ON contents(title);
+CREATE INDEX IF NOT EXISTS idx_contents_url ON contents(url);
+CREATE INDEX IF NOT EXISTS idx_socials_content_id ON socials(content_id);
+CREATE INDEX IF NOT EXISTS idx_images_content_id ON images(content_id);
