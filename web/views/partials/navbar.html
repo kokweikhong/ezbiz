@@ -71,6 +71,7 @@
                 aria-expanded="false"
                 aria-haspopup="true"
                 x-on:click="open = !open"
+                @click.away="open = false"
               >
                 <span class="sr-only">Open user menu</span>
                 <img

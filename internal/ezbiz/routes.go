@@ -23,6 +23,9 @@ func (a *App) SetupRoutes() {
 	admin.Use(a.JwtFromCookie)
 	admin.Use(a.JwtAuthMiddleware())
 	admin.GET("", a.handler.GetAdmin)
+
+	contents := admin.Group("/contents")
+	contents.GET("/create", a.handler.GetContentsCreate)
 	// admin.GET("/create-content", adminH.AdminIndex)
 	admin.GET("/update-content", nil)
 
@@ -30,11 +33,8 @@ func (a *App) SetupRoutes() {
 	admin.GET("/update-user", nil)
 
 	auth := a.server.Group("/auth")
-	auth.GET("/login", a.handler.GetLogin)
+	auth.GET("/login", a.handler.GetAuthLogin)
+	auth.POST("/login", a.handler.PostAuthLogin)
 	auth.POST("/register", nil)
-
-	api := a.server.Group("/api/v1")
-	api.GET("/content", nil)
-	api.POST("/login", a.handler.PostLogin)
 
 }

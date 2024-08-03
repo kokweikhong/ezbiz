@@ -6,6 +6,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *baseHandler) GetLogin(c echo.Context) error {
+func (h *baseHandler) GetAuthLogin(c echo.Context) error {
 	return c.Render(http.StatusOK, "login", nil)
 }

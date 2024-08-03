@@ -18,6 +18,9 @@ export default {
           950: "#2e084e",
         },
       },
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+      },
     },
   },
   plugins: [],

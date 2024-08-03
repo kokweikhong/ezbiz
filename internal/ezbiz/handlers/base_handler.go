@@ -7,8 +7,10 @@ import (
 
 type BaseHandler interface {
 	GetAdmin(c echo.Context) error
-	GetLogin(c echo.Context) error
-	PostLogin(c echo.Context) error
+	GetAuthLogin(c echo.Context) error
+	PostAuthLogin(c echo.Context) error
+
+	GetContentsCreate(c echo.Context) error
 }
 
 type baseHandler struct {

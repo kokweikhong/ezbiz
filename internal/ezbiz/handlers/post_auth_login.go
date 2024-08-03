@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *baseHandler) PostLogin(c echo.Context) error {
+func (h *baseHandler) PostAuthLogin(c echo.Context) error {
 	// email and password from form
 	email := c.FormValue("email")
 	password := c.FormValue("password")
