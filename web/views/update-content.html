@@ -198,24 +198,52 @@
                 >Icon</label
               >
               <div class="flex items-center mt-2 gap-x-3">
-                <svg
-                  class="w-12 h-12 text-gray-300"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-                    clip-rule="evenodd"
+                <div class="w-12 h-12 rounded-full bg-gray-300">
+                  <img
+                    id="favicon-preview"
+                    src="/assets/images/favicon.ico"
+                    alt="favicon"
+                    class="w-12 h-12 rounded-full"
                   />
-                </svg>
-                <button
-                  type="button"
-                  class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                  <!-- <svg -->
+                  <!--   class="w-12 h-12 text-gray-300" -->
+                  <!--   viewBox="0 0 24 24" -->
+                  <!--   fill="currentColor" -->
+                  <!--   aria-hidden="true" -->
+                  <!-- > -->
+                  <!--   <path -->
+                  <!--     fill-rule="evenodd" -->
+                  <!--     d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" -->
+                  <!--     clip-rule="evenodd" -->
+                  <!--   /> -->
+                  <!-- </svg> -->
+                </div>
+                <label
+                  for="favicon"
+                  class="flex bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 outline-none rounded cursor-pointer"
                 >
-                  Change
-                </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 mr-2 fill-white inline"
+                    viewBox="0 0 32 32"
+                  >
+                    <path
+                      d="M23.75 11.044a7.99 7.99 0 0 0-15.5-.009A8 8 0 0 0 9 27h3a1 1 0 0 0 0-2H9a6 6 0 0 1-.035-12 1.038 1.038 0 0 0 1.1-.854 5.991 5.991 0 0 1 11.862 0A1.08 1.08 0 0 0 23 13a6 6 0 0 1 0 12h-3a1 1 0 0 0 0 2h3a8 8 0 0 0 .75-15.956z"
+                      data-original="#000000"
+                    />
+                    <path
+                      d="M20.293 19.707a1 1 0 0 0 1.414-1.414l-5-5a1 1 0 0 0-1.414 0l-5 5a1 1 0 0 0 1.414 1.414L15 16.414V29a1 1 0 0 0 2 0V16.414z"
+                      data-original="#000000"
+                    />
+                  </svg>
+                  Upload
+                  <input
+                    type="file"
+                    id="favicon"
+                    accept=".ico"
+                    class="hidden"
+                  />
+                </label>
               </div>
             </div>
 
@@ -227,24 +255,40 @@
                 >Profile Iamge</label
               >
               <div class="flex items-center mt-2 gap-x-3">
-                <svg
-                  class="w-24 h-24 text-gray-300"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-                    clip-rule="evenodd"
+                <div class="w-24 h-24 rounded-full bg-gray-300">
+                  <img
+                    id="profileImage-preview"
+                    src="/assets/images/favicon.ico"
+                    alt="favicon"
+                    class="w-24 h-24 rounded-full"
                   />
-                </svg>
-                <button
-                  type="button"
-                  class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                </div>
+                <label
+                  for="profileImage"
+                  class="flex bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 outline-none rounded cursor-pointer"
                 >
-                  Change
-                </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 mr-2 fill-white inline"
+                    viewBox="0 0 32 32"
+                  >
+                    <path
+                      d="M23.75 11.044a7.99 7.99 0 0 0-15.5-.009A8 8 0 0 0 9 27h3a1 1 0 0 0 0-2H9a6 6 0 0 1-.035-12 1.038 1.038 0 0 0 1.1-.854 5.991 5.991 0 0 1 11.862 0A1.08 1.08 0 0 0 23 13a6 6 0 0 1 0 12h-3a1 1 0 0 0 0 2h3a8 8 0 0 0 .75-15.956z"
+                      data-original="#000000"
+                    />
+                    <path
+                      d="M20.293 19.707a1 1 0 0 0 1.414-1.414l-5-5a1 1 0 0 0-1.414 0l-5 5a1 1 0 0 0 1.414 1.414L15 16.414V29a1 1 0 0 0 2 0V16.414z"
+                      data-original="#000000"
+                    />
+                  </svg>
+                  Upload
+                  <input
+                    type="file"
+                    id="profileImage"
+                    accept="image/*"
+                    class="hidden"
+                  />
+                </label>
               </div>
             </div>
 
@@ -258,7 +302,37 @@
               <div
                 class="flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg border-gray-900/25"
               >
-                <div class="text-center">
+                <div
+                  id="background-image-preview"
+                  class="w-full h-48 hidden relative"
+                >
+                  <img
+                    id="backgroundImage-preview"
+                    src="/assets/images/favicon.ico"
+                    alt="favicon"
+                    class="w-full h-full object-cover rounded-lg"
+                  />
+                  <button
+                    id="background-image-remove"
+                    type="button"
+                    class="absolute top-0 right-0 p-1 bg-red-500 rounded-full hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                  >
+                    <!-- close -->
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-6"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M3.293 4.707a1 1 0 011.414 0L12 10.586l7.293-7.293a1 1 0 111.414 1.414L13.414 12l7.293 7.293a1 1 0 01-1.414 1.414L12 13.414l-7.293 7.293a1 1 0 01-1.414-1.414L10.586 12 3.293 4.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+                <div id="background-image-upload" class="text-center">
                   <svg
                     class="w-12 h-12 mx-auto text-gray-300"
                     viewBox="0 0 24 24"
@@ -271,20 +345,22 @@
                       clip-rule="evenodd"
                     />
                   </svg>
-                  <div class="flex mt-4 text-sm leading-6 text-gray-600">
+                  <div
+                    class="flex justify-center mt-4 text-sm leading-6 text-gray-600"
+                  >
                     <label
-                      for="file-upload"
+                      for="backgroundImage"
                       class="relative font-semibold text-indigo-600 bg-white rounded-md cursor-pointer focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                     >
                       <span>Upload a file</span>
                       <input
-                        id="file-upload"
-                        name="file-upload"
+                        id="backgroundImage"
+                        name="backgroundImage"
                         type="file"
+                        accept="image/*"
                         class="sr-only"
                       />
                     </label>
-                    <p class="pl-1">or drag and drop</p>
                   </div>
                   <p class="text-xs leading-5 text-gray-600">
                     PNG, JPG, GIF up to 10MB
