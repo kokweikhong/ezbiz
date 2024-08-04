@@ -39,8 +39,8 @@ func (a *App) SetupTemplates() {
 	}
 	t.templates["admin"] = template.Must(template.ParseFS(views,
 		append(partials, "views/admin.html")...))
-	t.templates["create-content"] = template.Must(template.ParseFS(views,
-		append(partials, "views/create-content.html")...))
+	t.templates["update-content"] = template.Must(template.ParseFS(views,
+		append(partials, "views/update-content.html")...))
 	t.templates["login"] = template.Must(template.ParseFS(views,
 		"views/login.html"))
 

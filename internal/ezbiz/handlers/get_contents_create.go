@@ -7,5 +7,10 @@ import (
 )
 
 func (h *baseHandler) GetContentsCreate(c echo.Context) error {
-	return c.Render(http.StatusOK, "create-content", nil)
+	data := struct {
+		ID string
+	}{
+		ID: "123",
+	}
+	return c.Render(http.StatusOK, "create-content", data)
 }

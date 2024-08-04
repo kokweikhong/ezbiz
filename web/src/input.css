@@ -74,6 +74,34 @@
   src: url("/assets/fonts/poppins/Poppins-Black.ttf") format("truetype");
 }
 
+.quill-wrap {
+  max-width: 900px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}
+.info {
+  text-align: center;
+  margin-top: 20px;
+}
+.quill-wrap .ql-active {
+  border: 1px solid #ccc !important;
+  border-radius: 4px;
+}
+.quill-wrap button,
+.quill-wrap .ql-picker {
+  margin-right: 2px;
+}
+
+.ql-editor {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  min-height: 200px;
+}
+
 .profile-dropdown-leave {
   @apply transition ease-in duration-75 transform opacity-0 scale-95;
 }

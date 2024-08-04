@@ -8,10 +8,10 @@ import (
 )
 
 func (a *App) SetupRoutes() {
-	dist := web.GetDist()
-	assetHandler := http.FileServer(web.GetEmbedFileSytem(dist, "dist"))
-	a.server.GET("/dist/*", echo.WrapHandler(
-		http.StripPrefix("/dist/", assetHandler),
+	assets := web.GetAssets()
+	assetHandler := http.FileServer(web.GetEmbedFileSytem(assets, "assets"))
+	a.server.GET("/assets/*", echo.WrapHandler(
+		http.StripPrefix("/assets/", assetHandler),
 	))
 
 	// appH := handlers.NewAppHandler(createToken)
@@ -26,6 +26,8 @@ func (a *App) SetupRoutes() {
 
 	contents := admin.Group("/contents")
 	contents.GET("/create", a.handler.GetContentsCreate)
+	contents.GET("/update/:id", a.handler.GetContentsUpdate)
+	contents.PUT("/update/:id", a.handler.PutContentsUpdate)
 	// admin.GET("/create-content", adminH.AdminIndex)
 	admin.GET("/update-content", nil)
 

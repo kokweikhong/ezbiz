@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-//go:embed dist/*
-var Dist embed.FS
+//go:embed assets/*
+var Assets embed.FS
 
-func GetDist() embed.FS {
-	return Dist
+func GetAssets() embed.FS {
+	return Assets
 }
 
 //go:embed views/*

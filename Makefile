@@ -1,10 +1,12 @@
 build:
 	@echo "Building the application..."
+	@npm --prefix web run postcss
 	@go build -o bin/ezbiz cmd/ezbiz/main.go
 
 run: build
 	@echo "Running the application..."
 	@./bin/ezbiz
+
 
 test:
 	@echo "Running tests..."

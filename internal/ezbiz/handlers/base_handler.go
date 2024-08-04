@@ -11,6 +11,8 @@ type BaseHandler interface {
 	PostAuthLogin(c echo.Context) error
 
 	GetContentsCreate(c echo.Context) error
+	GetContentsUpdate(c echo.Context) error
+	PutContentsUpdate(c echo.Context) error
 }
 
 type baseHandler struct {
