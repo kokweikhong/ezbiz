@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "postcss": "postcss src/input.css -o assets/css/styles.css"
+    "postcss": "postcss src/input.css -o assets/css/style.css"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

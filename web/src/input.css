@@ -109,3 +109,13 @@
 .profile-dropdown-enter {
   @apply transition ease-out duration-100 transform opacity-100 scale-100;
 }
+
+[x-cloak=""] {
+  display: none;
+}
+
+@media screen and (max-width: theme("screens.lg")) {
+  [x-cloak="lg"] {
+    display: none;
+  }
+}
