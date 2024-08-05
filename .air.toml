@@ -4,9 +4,9 @@ tmp_dir = "tmp"
 
 [build]
   args_bin = []
-  bin = "./tmp/ezbiz"
+  bin = "./tmp/ezbiz.exe"
   # pre_cmd = ["npm --prefix ./web run build"]
-  cmd = "npm --prefix ./web run postcss && go build -o ./tmp/ezbiz ./cmd/ezbiz/main.go"
+  cmd = "npm --prefix ./web run postcss && go build -o ./tmp/ezbiz.exe ./cmd/ezbiz/main.go"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata", "web/node_modules"]
   exclude_file = ["*.log", "_test.go"]

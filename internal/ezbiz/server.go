@@ -1,7 +1,9 @@
 package ezbiz
 
 import (
-	"fmt"
+	"log/slog"
+	"os"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -17,18 +19,36 @@ type App struct {
 	config   *configs.EzbizConfig
 	jwt      auth.JwtAuth
 	handler  handlers.BaseHandler
+	logger   *slog.Logger
 }
 
 func NewApp(server *echo.Echo) *App {
 	if err := godotenv.Load(); err != nil {
-		fmt.Println("No .env file found")
+		slog.Error("No .env file found")
 	}
 
 	app := new(App)
 	app.server = server
 	app.config = configs.NewEzbizConfig()
 	app.jwt = auth.NewJwtAuth(app.config.Auth.Jwt)
-	app.handler = handlers.NewBaseHandler(app.jwt)
+
+	logLevel := new(slog.LevelVar)
+	logLevel.Set(slog.LevelDebug)
+	loggerOpts := &slog.HandlerOptions{
+		AddSource: false,
+		Level:     logLevel,
+		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+			if a.Key == slog.TimeKey {
+				a.Value = slog.StringValue(time.Now().Format("2006-01-02 15:04:05"))
+			}
+			return a
+		},
+	}
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, loggerOpts))
+	slog.SetDefault(logger)
+	app.logger = logger
+
+	app.handler = handlers.NewBaseHandler(app.jwt, app.postgres)
 
 	return app
 }

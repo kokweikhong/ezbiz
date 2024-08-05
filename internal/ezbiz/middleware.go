@@ -1,6 +1,9 @@
 package ezbiz
 
 import (
+	"context"
+	"log/slog"
+
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -8,8 +11,39 @@ import (
 )
 
 func (a *App) SetupMiddlewares() {
+	a.server.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogStatus:   true,
+		LogMethod:   true,
+		LogURI:      true,
+		LogError:    true,
+		HandleError: true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			if v.Error == nil {
+				a.logger.LogAttrs(context.Background(), slog.LevelInfo, "REQUEST",
+					slog.String("uri", v.URI),
+					slog.String("method", v.Method),
+					slog.Int("status", v.Status),
+				)
+			} else {
+				a.logger.LogAttrs(context.Background(), slog.LevelError, "REQUEST",
+					slog.String("uri", v.URI),
+					slog.String("method", v.Method),
+					slog.Int("status", v.Status),
+					slog.String("err", v.Error.Error()),
+				)
+			}
+			return nil
+		},
+	}))
 
-	a.server.Use(middleware.Logger())
+	a.server.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE, echo.OPTIONS},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		MaxAge:       86400,
+	}))
+
+	// a.server.Use(middleware.Logger())
 	a.server.Use(middleware.Recover())
 
 	a.server.Pre(middleware.RemoveTrailingSlash())

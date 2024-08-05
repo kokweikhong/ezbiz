@@ -3,11 +3,12 @@
   <link rel="stylesheet" href="/assets/css/quill.snow.css" />
 {{ end }}
 {{ define "scripts" }}
-  <script src="/assets/js/highlight.min.js"></script>
-  <script src="/assets/js/quill.js"></script>
+  <script defer src="/assets/js/highlight.min.js"></script>
+  <script defer src="/assets/js/quill.js"></script>
+  <script defer src="/assets/js/update-content.js"></script>
 {{ end }}
 {{ define "content" }}
-  <div class="space-y-10 divide-y divide-gray-900/10">
+  <div class="space-y-10 divide-y divide-gray-900/10" hx-ext="response-targets">
     <div id="abc"></div>
     <div class="grid grid-cols-1 pt-10 gap-x-8 gap-y-8 md:grid-cols-3">
       <div class="px-4 sm:px-0">
@@ -22,8 +23,10 @@
 
       <form
         class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
+        hx-encoding="multipart/form-data"
         hx-put="/admin/contents/update/{{ .ID }}"
         hx-target="#abc"
+        hx-target-5*="#abc"
       >
         <div class="px-4 py-6 sm:p-8">
           <div class="grid w-full grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -240,6 +243,7 @@
                   <input
                     type="file"
                     id="favicon"
+                    name="favicon"
                     accept=".ico"
                     class="hidden"
                   />
@@ -285,6 +289,7 @@
                   <input
                     type="file"
                     id="profileImage"
+                    name="profileImage"
                     accept="image/*"
                     class="hidden"
                   />
