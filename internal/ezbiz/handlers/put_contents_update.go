@@ -27,32 +27,37 @@ func (h *baseHandler) PutContentsUpdate(c echo.Context) error {
 	slog.Debug("ID", "id", id)
 	payload := new(putContentsUpdatePayload)
 	if err := c.Bind(payload); err != nil {
-		return c.HTML(http.StatusInternalServerError, "Error binding payload")
+		res := newToast(true, "Invalid payload")
+		return c.Render(http.StatusInternalServerError, "toast", res)
 	}
 	payload.ID = id
 
 	favicon, err := h.saveFile(c, "favicon", "uploads/favicon")
 	if err != nil && favicon != "" {
 		slog.Error("Error saving favicon", "error", err)
-		return c.HTML(http.StatusInternalServerError, "Error saving favicon")
+		res := newToast(true, "Error saving favicon")
+		return c.Render(http.StatusInternalServerError, "toast", res)
 	}
 
 	profile, err := h.saveFile(c, "profileImage", "uploads/profile")
 	if err != nil && profile != "" {
 		slog.Error("Error saving profile", "error", err)
-		return c.HTML(http.StatusInternalServerError, "Error saving profile image")
+		res := newToast(true, "Error saving profile")
+		return c.Render(http.StatusInternalServerError, "toast", res)
 	}
 
 	bg, err := h.saveFile(c, "backgroundImage", "uploads/background")
 	if err != nil && bg != "" {
 		slog.Error("Error saving background", "error", err)
-		return c.HTML(http.StatusInternalServerError, "Error saving background image")
+		res := newToast(true, "Error saving background")
+		return c.Render(http.StatusInternalServerError, "toast", res)
 	}
 
 	content, err := h.srv.content.GetContentById(c.Request().Context(), uuid.MustParse(payload.ID))
 	if err != nil {
 		slog.Error("Error getting content", "error", err)
-		return c.HTML(http.StatusInternalServerError, "Error getting content")
+		res := newToast(true, "Error getting content")
+		return c.Render(http.StatusInternalServerError, "toast", res)
 	}
 
 	if favicon != "" {
@@ -83,10 +88,12 @@ func (h *baseHandler) PutContentsUpdate(c echo.Context) error {
 
 	if err := h.srv.content.UpdateContent(c.Request().Context(), arg); err != nil {
 		slog.Error("Error updating content", "error", err)
-		return c.HTML(http.StatusInternalServerError, "Error updating content")
+		res := newToast(true, "Error updating content")
+		return c.Render(http.StatusInternalServerError, "toast", res)
 	}
 
-	return c.HTML(http.StatusOK, "Content updated")
+	res := newToast(false, "Content updated")
+	return c.Render(http.StatusOK, "toast", res)
 }
 
 func (h *baseHandler) saveFile(c echo.Context, key string, newName string) (string, error) {

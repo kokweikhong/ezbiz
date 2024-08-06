@@ -14,6 +14,8 @@ func (a *App) SetupRoutes() {
 		http.StripPrefix("/assets/", assetHandler),
 	))
 
+	a.server.GET("/", a.handler.GetHome)
+
 	// appH := handlers.NewAppHandler(createToken)
 	//
 	// adminH := NewAdminHandler()
@@ -29,7 +31,6 @@ func (a *App) SetupRoutes() {
 	contents.GET("/update/:id", a.handler.GetContentsUpdate)
 	contents.PUT("/update/:id", a.handler.PutContentsUpdate)
 	// admin.GET("/create-content", adminH.AdminIndex)
-	admin.GET("/update-content", nil)
 
 	admin.GET("/create-user", nil)
 	admin.GET("/update-user", nil)

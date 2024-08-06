@@ -37,11 +37,15 @@ func (a *App) SetupTemplates() {
 	// 	"views/partials/navbar.html",
 	// 	"views/partials/sidebar.html",
 	// }
+
 	adminPartials := []string{
 		"views/partials/header.html",
 		"views/partials/sidebar.html",
 		"views/partials/admin-base.html",
 	}
+	t.templates["404"] = template.Must(template.ParseFS(views, "views/404.html"))
+	t.templates["toast"] = template.Must(template.ParseFS(views, "views/components/toast.html"))
+	t.templates["index"] = template.Must(template.ParseFS(views, "views/index.html"))
 	t.templates["admin"] = template.Must(template.ParseFS(views,
 		append(adminPartials, "views/admin.html")...))
 	t.templates["update-content"] = template.Must(template.ParseFS(views,

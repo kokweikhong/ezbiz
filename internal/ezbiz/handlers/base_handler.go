@@ -7,7 +7,21 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type toast struct {
+	Message string `json:"message"`
+	IsError bool   `json:"isError"`
+}
+
+func newToast(isError bool, message string) *toast {
+	return &toast{
+		Message: message,
+		IsError: isError,
+	}
+}
+
 type BaseHandler interface {
+	GetHome(c echo.Context) error
+
 	GetAdmin(c echo.Context) error
 	GetAuthLogin(c echo.Context) error
 	PostAuthLogin(c echo.Context) error

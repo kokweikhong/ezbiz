@@ -3,6 +3,7 @@ package ezbiz
 import (
 	"context"
 	"log/slog"
+	"net/http"
 
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
@@ -11,6 +12,7 @@ import (
 )
 
 func (a *App) SetupMiddlewares() {
+	a.server.HTTPErrorHandler = customHTTPErrorHandler
 	a.server.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogStatus:   true,
 		LogMethod:   true,
@@ -47,6 +49,18 @@ func (a *App) SetupMiddlewares() {
 	a.server.Use(middleware.Recover())
 
 	a.server.Pre(middleware.RemoveTrailingSlash())
+
+}
+
+func customHTTPErrorHandler(err error, c echo.Context) {
+	code := http.StatusInternalServerError
+	if he, ok := err.(*echo.HTTPError); ok {
+		code = he.Code
+	}
+	c.Logger().Error(err)
+	if code == http.StatusNotFound {
+		c.Render(404, "404", nil)
+	}
 
 }
 

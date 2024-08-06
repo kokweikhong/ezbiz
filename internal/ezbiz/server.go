@@ -30,6 +30,20 @@ func NewApp(server *echo.Echo) *App {
 	app := new(App)
 	app.server = server
 	app.config = configs.NewEzbizConfig()
+
+	// postgres
+	// if err := db.InitPostgres(
+	// 	app.config.Db.Postgres.Host,
+	// 	app.config.Db.Postgres.Port,
+	// 	app.config.Db.Postgres.User,
+	// 	app.config.Db.Postgres.Password,
+	// 	app.config.Db.Postgres.Dbname,
+	// 	app.config.Db.Postgres.Sslmode,
+	// ); err != nil {
+	// 	panic(err)
+	// }
+	// app.postgres = db.GetPostgres()
+
 	app.jwt = auth.NewJwtAuth(app.config.Auth.Jwt)
 
 	logLevel := new(slog.LevelVar)

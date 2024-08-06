@@ -1,0 +1,66 @@
+{{ define "base" }}
+  <div x-data="toast({{ .IsError }})" class="fixed bottom-0 right-0 m-4">
+    <template x-if="show">
+      <div
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="transform opacity-0 scale-90"
+        x-transition:enter-end="transform opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="transform opacity-100 scale-100"
+        x-transition:leave-end="transform opacity-0 scale-90"
+        class="bg-white shadow-lg rounded-sm"
+      >
+        <div
+          class="inline-flex min-w-80 px-4 py-2 rounded-sm text-sm border bg-emerald-100 dark:bg-emerald-400/30 border-emerald-200 dark:border-transparent text-emerald-600 dark:text-emerald-500"
+          x-bind:class="isError ? 'bg-rose-500 text-white' : 'bg-emerald-100 text-emerald-600'"
+        >
+          <div class="flex flex-wrap w-full justify-between items-start">
+            <div class="flex">
+              {{ if .IsError }}
+                <svg
+                  class="w-4 h-4 shrink-0 fill-current opacity-80 mt-[3px] mr-3"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm3.5 10.1l-1.4 1.4L8 9.4l-2.1 2.1-1.4-1.4L6.6 8 4.5 5.9l1.4-1.4L8 6.6l2.1-2.1 1.4 1.4L9.4 8l2.1 2.1z"
+                  />
+                </svg>
+              {{ else }}
+                <svg
+                  class="w-4 h-4 shrink-0 fill-current opacity-80 mt-[3px] mr-3"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM7 11.4L3.6 8 5 6.6l2 2 4-4L12.4 6 7 11.4z"
+                  />
+                </svg>
+              {{ end }}
+              <div>
+                {{ .Message }}
+                <span x-text="isError ? 'Error' : 'Success'"></span>
+              </div>
+            </div>
+            <button
+              class="opacity-70 hover:opacity-80 ml-3 mt-[3px]"
+              @click="closeToast()"
+            >
+              <div class="sr-only">Close</div>
+              <svg class="w-4 h-4 fill-current">
+                <path
+                  d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z"
+                />
+              </svg>
+            </button>
+            <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+              <div
+                class="bg-emerald-300 h-1.5 rounded-full transition-all duration-100 ease-linear"
+                :style="`width: ${progress}%`"
+                x-bind:class="isError ? 'bg-rose-600' : 'bg-emerald-300'"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+{{ end }}

@@ -73,3 +73,33 @@ if (lightSwitches.length > 0) {
     });
   });
 }
+
+function toast(isError) {
+  return {
+    isError: isError,
+    show: true,
+    progress: 0,
+    init() {
+      this.show = true;
+      this.progress = 0;
+      this.runProgress();
+    },
+    runProgress() {
+      let intervalTime = 100; // Interval time in milliseconds
+      let totalTime = 5000; // Total time the toast should be visible in milliseconds
+      let increment = (intervalTime / totalTime) * 100;
+
+      const interval = setInterval(() => {
+        this.progress += increment;
+        if (this.progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => this.closeToast(), intervalTime); // Wait for the last update before closing
+        }
+      }, intervalTime);
+    },
+    closeToast() {
+      this.show = false;
+      this.progress = 0;
+    },
+  };
+}
