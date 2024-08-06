@@ -31,19 +31,21 @@ func (a *App) SetupTemplates() {
 	t := new(AppTemplate)
 	t.templates = make(map[string]*template.Template)
 	views := web.GetViews()
-	partials := []string{
-		"views/partials/base.html",
-		"views/partials/head.html",
-		"views/partials/navbar.html",
-		"views/partials/sidebar.html",
-	}
+	// partials := []string{
+	// 	"views/partials/base.html",
+	// 	"views/partials/head.html",
+	// 	"views/partials/navbar.html",
+	// 	"views/partials/sidebar.html",
+	// }
 	adminPartials := []string{
+		"views/partials/header.html",
+		"views/partials/sidebar.html",
 		"views/partials/admin-base.html",
 	}
 	t.templates["admin"] = template.Must(template.ParseFS(views,
 		append(adminPartials, "views/admin.html")...))
 	t.templates["update-content"] = template.Must(template.ParseFS(views,
-		append(partials, "views/update-content.html")...))
+		append(adminPartials, "views/update-content.html")...))
 	t.templates["login"] = template.Must(template.ParseFS(views,
 		"views/login.html"))
 

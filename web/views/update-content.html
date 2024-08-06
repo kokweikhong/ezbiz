@@ -3,12 +3,136 @@
   <link rel="stylesheet" href="/assets/css/quill.snow.css" />
 {{ end }}
 {{ define "scripts" }}
-  <script defer src="/assets/js/highlight.min.js"></script>
-  <script defer src="/assets/js/quill.js"></script>
+  <script defer src="/assets/js/vendors/htmx.min.js"></script>
+  <script defer src="/assets/js/vendors/response-targets.js"></script>
+  <script defer src="/assets/js/vendors/highlight.min.js"></script>
+  <script defer src="/assets/js/vendors/quill.js"></script>
   <script defer src="/assets/js/update-content.js"></script>
 {{ end }}
 {{ define "content" }}
-  <div class="space-y-10 divide-y divide-gray-900/10" hx-ext="response-targets">
+  <!-- Page header -->
+  <div class="mb-8">
+    <h1
+      class="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold"
+    >
+      Update Content Information
+    </h1>
+  </div>
+  <div x-data="toast()" class="fixed bottom-0 right-0 m-4">
+    <template x-if="show">
+      <div
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="transform opacity-0 scale-90"
+        x-transition:enter-end="transform opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="transform opacity-100 scale-100"
+        x-transition:leave-end="transform opacity-0 scale-90"
+        class="bg-white shadow-lg rounded-sm"
+      >
+        <div
+          class="inline-flex min-w-80 px-4 py-2 rounded-sm text-sm border bg-emerald-100 dark:bg-emerald-400/30 border-emerald-200 dark:border-transparent text-emerald-600 dark:text-emerald-500"
+        >
+          <div class="flex flex-wrap w-full justify-between items-start">
+            <div class="flex">
+              <svg
+                class="w-4 h-4 shrink-0 fill-current opacity-80 mt-[3px] mr-3"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM7 11.4L3.6 8 5 6.6l2 2 4-4L12.4 6 7 11.4z"
+                />
+              </svg>
+              <div id="toast-success">A successful toast.</div>
+            </div>
+            <button
+              class="opacity-70 hover:opacity-80 ml-3 mt-[3px]"
+              @click="closeToast()"
+            >
+              <div class="sr-only">Close</div>
+              <svg class="w-4 h-4 fill-current">
+                <path
+                  d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z"
+                />
+              </svg>
+            </button>
+            <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+              <div
+                class="bg-emerald-300 h-1.5 rounded-full transition-all duration-100 ease-linear"
+                :style="`width: ${progress}%`"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+  <script>
+    function toast() {
+      return {
+        show: false,
+        progress: 0,
+        init() {
+          this.show = true;
+          this.progress = 0;
+          this.runProgress();
+        },
+        runProgress() {
+          let intervalTime = 100; // Interval time in milliseconds
+          let totalTime = 5000; // Total time the toast should be visible in milliseconds
+          let increment = (intervalTime / totalTime) * 100;
+
+          const interval = setInterval(() => {
+            this.progress += increment;
+            if (this.progress >= 100) {
+              clearInterval(interval);
+              setTimeout(() => this.closeToast(), intervalTime); // Wait for the last update before closing
+            }
+          }, intervalTime);
+        },
+        closeToast() {
+          this.show = false;
+          this.progress = 0;
+        },
+      };
+    }
+  </script>
+  <!-- Start -->
+  <!-- <div x-show="open" x-data="{ open: true }" role="alert"> -->
+  <!--   <div -->
+  <!--     class="inline-flex min-w-80 px-4 py-2 rounded-sm text-sm border bg-rose-100 dark:bg-rose-400/30 border-rose-200 dark:border-transparent text-rose-600 dark:text-rose-400" -->
+  <!--   > -->
+  <!--     <div class="flex w-full justify-between items-start"> -->
+  <!--       <div class="flex"> -->
+  <!--         <svg -->
+  <!--           class="w-4 h-4 shrink-0 fill-current opacity-80 mt-[3px] mr-3" -->
+  <!--           viewBox="0 0 16 16" -->
+  <!--         > -->
+  <!--           <path -->
+  <!--             d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm3.5 10.1l-1.4 1.4L8 9.4l-2.1 2.1-1.4-1.4L6.6 8 4.5 5.9l1.4-1.4L8 6.6l2.1-2.1 1.4 1.4L9.4 8l2.1 2.1z" -->
+  <!--           /> -->
+  <!--         </svg> -->
+  <!--         <div>A dangerous toast.</div> -->
+  <!--       </div> -->
+  <!--       <button -->
+  <!--         class="opacity-70 hover:opacity-80 ml-3 mt-[3px]" -->
+  <!--         @click="open = false" -->
+  <!--       > -->
+  <!--         <div class="sr-only">Close</div> -->
+  <!--         <svg class="w-4 h-4 fill-current"> -->
+  <!--           <path -->
+  <!--             d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z" -->
+  <!--           /> -->
+  <!--         </svg> -->
+  <!--       </button> -->
+  <!--     </div> -->
+  <!--   </div> -->
+  <!-- </div> -->
+  <!-- End -->
+
+  <div
+    class="space-y-10 divide-y divide-gray-900/10 mt-8"
+    hx-ext="response-targets"
+  >
     <div id="abc"></div>
     <div class="grid grid-cols-1 pt-10 gap-x-8 gap-y-8 md:grid-cols-3">
       <div class="px-4 sm:px-0">
@@ -25,8 +149,9 @@
         class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
         hx-encoding="multipart/form-data"
         hx-put="/admin/contents/update/{{ .ID }}"
-        hx-target="#abc"
+        hx-target="#toast-success"
         hx-target-5*="#abc"
+        hx-swap="innerHTML"
       >
         <div class="px-4 py-6 sm:p-8">
           <div class="grid w-full grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
